@@ -1,0 +1,345 @@
+,Symbol,Name
+0,GBES,Nippon India Gold BeES
+1,NIPS,Nippon India Silver
+2,NBES,Nippon Nifty 50 BeES
+3,TATG,Tata Gold
+4,NIPD,Nippon India ETF Nifty IT
+5,GOMS,Goldman Sachs CPSE
+6,ZERO,Zerodha Nifty 1D Rate Liquid
+7,PSUB,Goldman Sachs PSU Bank BeES
+8,IICD,ICICI Prudential Silver
+9,NIPT,Nippon India Nifty Pharma
+10,HDGO,HDFC Gold
+11,LBES,Goldman Sachs Liquid BeES
+12,MIRS,Mirae Asset NYSE FANG+
+13,ZERO,Zerodha Nifty 1D Rate Liquid
+14,ICIV,ICICI Prudential Private Banks
+15,HNGS,Goldman Sachs Hang Seng
+16,MIRN,Mirae Asset Nifty Financial Services
+17,NTFL,Nippon India ETF Long Term Gilt
+18,N100,Motilal Oswal MOSt Shares NASDAQ 100
+19,HFCM,HDFC Nifty Smallcap 250
+20,KOTN,Kotak Nifty Alpha 50
+21,MIAN,Mirae Asset Nifty Midcap 150
+22,TATR,Tata Silver
+23,SBIG,SBI Gold
+24,IPEG,ICICI Prudential Gold
+25,NBES,Nippon Nifty 50 BeES
+26,MIRW,Mirae Asset Nifty EV and New Age Automotive
+27,ICIY,ICICI Prudential Nifty Auto
+28,MIRM,Mirae Asset Nifty Smallcap 250 Momentum Quality 10
+29,KTGF,Kotak Gold
+30,GBES,Nippon India Gold BeES
+31,ICIT,ICICI Prudential Nifty Next 50
+32,ADID,Aditya Birla Sun Life Nifty PSE
+33,ICI2,ICICI Prudential Nifty 200 Momentum 30
+34,ICIG,ICICI Prudential FMCG
+35,ICIP,ICICI Prudential Liquid
+36,MOTM,Motilal Oswal Nifty Smallcap 250
+37,MIRH,Mirae Asset Hang Seng TECH
+38,ICIH,ICICI Prudential Alpha Low Vol 30
+39,IICP,ICICI Prudential Midcap 150
+40,ZERD,Zerodha Gold
+41,MIRP,Mirae Asset S&P 500 Top 50
+42,BBES,Goldman Sachs Banking
+43,SBFP,SBI Nifty 50
+44,IICR,ICICI Prudential IT
+45,MIRU,Mirae Asset Nifty MidSmallcap400 Momentum Quality
+46,ICPR,BHARAT 22
+47,MIRG,Mirae Asset Gold
+48,ZERA,Zerodha Nifty Midcap 150
+49,NTFM,Reliance Nifty Midcap 150
+50,ICIN,ICICI Prudential NV20 iWIN
+51,ICBS,ICICI Prudential BSE 500
+52,PSUB,Nippon India PSU Bank BeES
+53,ICNI,ICICI Prudential Nifty
+54,ADIY,Aditya Birla Sun Life Nifty 50
+55,AITI,Aditya Birla Sun Life Silver
+56,AITA,Aditya Birla Sun Life Nifty Healthcare
+57,M100,Motilal Oswal Most Shares Midcap 100
+58,AXGF,Axis Gold Exchange Traded Fund
+59,MOTY,Motilal Oswal Nifty 500
+60,MIRS,Mirae Asset NYSE FANG+
+61,AXII,Axis Silver
+62,ICIC,ICICI Prudential Nifty100
+63,KTGF,Kotak Gold Exchange Traded Scheme
+64,LBES,Goldman Sachs Liquid BeES
+65,UTIV,UTI Silver Exchange Traded Fund
+66,IICI,ICICI Prudential Nifty Low Vol 30
+67,HDFU,HDFC NIFTY200 Momentum 30
+68,JBES,Nippon India ETF Nifty Next 50 Junior BeES
+69,MOTO,Motilal Oswal Nasdaq Q 50
+70,MOTA,Motilal Oswal Nifty 200 Momentum 30
+71,GOMS,Goldman Sachs CPSE
+72,NIPY,Nippon India Nifty Auto
+73,NIPE,Nippon India Nifty 5 Yr Benchmark G-Sec
+74,AITA,Aditya Birla Sun Life Nifty Healthcare
+75,BBES,Nippon India Bank BeES
+76,AXGF,Axis Gold
+77,ICCP,ICICI Prudential Nifty PSU Bank
+78,UTII,UTI Nifty Next 50
+79,MIAN,Mirae Asset Nifty Midcap 150
+80,ADIG,Aditya BSL CRISIL Liquid Ovrnght
+81,KOTC,Kotak Nifty MNC
+82,ICIQ,ICICI Prudential Nifty 200 Quality 30
+83,HDFN,HDFC Nifty Growth
+84,ZERD,Zerodha Gold
+85,ZERH,Zerodha Nifty 100
+86,MIRH,Mirae Asset Hang Seng TECH
+87,HDFP,HDFC Nifty Private Bank
+88,NCON,R Shares Consumption
+89,ICPR,BHARAT 22
+90,MRRA,Mirae Asset Nifty500 Multicap 50:25:25
+91,AITY,Birla Sun Life Gold
+92,ICIA,ICICI Prudential Bank
+93,UTGF,UTI Gold
+94,ICIU,ICICI Prudential Midcap Select iWIN
+95,AITI,Aditya Birla Sun Life Silver
+96,HDFI,HDFC Nifty Next 50
+97,N100,Motilal Oswal MOSt Shares NASDAQ 100
+98,MRAA,Mirae Asset Nifty 200 Alpha 30
+99,HDFU,HDFC NIFTY200 Momentum 30
+100,ICI2,ICICI Prudential Nifty 200 Momentum 30
+101,IICU,ICICI Prudential Healthcare
+102,IICA,ICICI Prudential Nifty Commodities
+103,IICN,ICICI Prudential Nifty Infrastructure
+104,MIRG,Mirae Asset Gold
+105,IICD,ICICI Prudential Silver
+106,IICR,ICICI Prudential IT
+107,M100,Motilal Oswal Most Shares Midcap 100
+108,HDGO,HDFC Gold Exchange Traded Fund
+109,MIRD,Mirae Asset Nifty 1D Rate Liquid
+110,HFCM,HDFC Nifty Smallcap 250
+111,KOTK,Kotak Nifty
+112,SBIG,SBI Gold
+113,KOTT,Kotak IT
+114,DSPR,DSP Nifty Private Bank
+115,ADIM,Aditya Birla Sun Life Nifty 200 Momentum 30
+116,MOTE,Motilal Oswal S&P BSE Enhanced Value
+117,MOTT,Motilal Oswal Nifty Realty
+118,MOTO,Motilal Oswal Nasdaq Q 50
+119,HDFF,HDFC Nifty 100
+120,NDIV,R Shares Dividend Opportunities
+121,ICIG,ICICI Prudential FMCG
+122,KOTS,Kotak Silver
+123,LICN,LIC MF G-SEC Long Term
+124,UTII,UTI Nifty Next 50
+125,SBGT,SBI 10 YEAR GILT
+126,MOTW,Motilal Oswal S&P BSE Healthcare
+127,MIRA,Mirae Asset Nifty 50
+128,HFCF,HDFC NIFTY Midcap 150
+129,TATT,Tata Nifty India Digital
+130,BARF,BHARAT Bond ETF April 2025 Growth
+131,ICIT,ICICI Prudential Nifty Next 50
+132,MIRE,Mirae Asset Nifty Next 50
+133,ICIY,ICICI Prudential Nifty Auto
+134,ADIQ,Aditya Birla Sun Life Nifty 200 Quality 30
+135,QTGF,Quantum Gold
+136,ADIY,Aditya Birla Sun Life Nifty 50
+137,KOTF,Kotak Nifty 100 Low Vol 30
+138,UTIB,UTI Bank Exchange Traded Fund
+139,JBES,Nippon India ETF Nifty Next 50 Junior BeES
+140,HFCN,HDFC Nifty IT
+141,DSPG,DSP Gold
+142,HDFK,HDFC Nifty PSU Bank
+143,HDFB,HDFC Nifty Bank
+144,ICIC,ICICI Prudential Nifty100
+145,SBIN,SBI Nifty Next 50
+146,ADIM,Aditya Birla Sun Life Nifty 200 Momentum 30
+147,HNGS,Nippon India Hang Seng BeES
+148,KOTD,Kotak Midcap 50
+149,MIRI,Mirae Asset Nifty India Manufacturing
+150,ICIH,ICICI Prudential Alpha Low Vol 30
+151,MIRU,Mirae Asset Nifty MidSmallcap400 Momentum Quality
+152,DSPU,DSP Nifty PSU Bank
+153,IPEG,ICICI Prudential Gold
+154,HFCS,HDFC S&P BSE 500
+155,UTIN,UTI Nifty
+156,NIPO,Reliance R Shares CNX 100
+157,MIRM,Mirae Asset Nifty Smallcap 250 Momentum Quality 10
+158,MRAE,Mirae Asset Nifty IT
+159,ICNI,ICICI Prudential Nifty
+160,MOTA,Motilal Oswal Nifty 200 Momentum 30
+161,BARE,BHARAT Bond ETF April 2031 Growth
+162,IICN,ICICI Prudential Nifty Infrastructure
+163,DSPL,DSP BR Liquid NS
+164,KOTR,Kotak Nifty 1D Rate Liquid
+165,NNET,R Shares NV 20
+166,IICP,ICICI Prudential Midcap 150
+167,IFRB,Goldman Sachs Infrastructure BeES
+168,DSPS,DSP Silver
+169,MIRX,Mirae Asset S&P BSE Sensex
+170,UTGF,UTI Gold Exchange Traded Scheme
+171,KOTK,Kotak Nifty
+172,ADIB,Aditya Birla Sun Life Nifty Next 50
+173,HDFB,HDFC Banking
+174,ICCP,ICICI Prudential Nifty PSU Bank
+175,MIRL,Mirae Asset Silver
+176,SBIF,SBI Nifty Bank
+177,QTGF,Quantum Gold Exchange Traded Scheme
+178,ICIO,ICICI Prudential Consumption
+179,SBFP,SBI Nifty 50
+180,HDFO,HDFC NIFTY100 Low Volatility 30
+181,DSPY,DSP Nifty IT
+182,SIFN,SBI IT
+183,ICIX,ICICI Prudential Nifty Financial Services Ex-Bank
+184,AXIB,Axis AAA Bond Plus SDL 2026 Maturity
+185,SBIU,SBI Consumption
+186,HDFE,HDFC Silver
+187,HDSE,HDFC Sensex
+188,ICIV,ICICI Prudential Private Banks
+189,EDEI,Edelweiss Gold
+190,KTPU,Kotak PSU Bank
+191,MIRP,Mirae Asset S&P 500 Top 50
+192,MIRA,Mirae Asset Nifty 50
+193,MIRW,Mirae Asset Nifty EV and New Age Automotive
+194,KONV,Kotak NV 20 Dividend
+195,ICIN,ICICI Prudential NV20 iWIN
+196,NIPN,Reliance Sensex Next 50
+197,IICI,ICICI Prudential Nifty Low Vol 30
+198,ADIB,Aditya Birla Sun Life Nifty Next 50
+199,TATN,Tata Nifty Exchange Traded Fund
+200,ADIL,Aditya Birla Sun Life Banking
+201,KOTM,Kotak Banking
+202,AXIN,Axis Consumption
+203,DSPN,DSP Nifty 50 Equal Weight
+204,UTIB,UTI Bank Exchange Traded Fund
+205,AISN,Axis Nifty
+206,IICU,ICICI Prudential Healthcare
+207,HDFI,HDFC Nifty Next 50
+208,ICBS,ICICI Prudential BSE 500
+209,HDFN,HDFC Nifty Growth
+210,AXIN,Axis Consumption
+211,AITB,Aditya Birla Sun Life Nifty IT
+212,BAJI,Bajaj Finserv Nifty Bank
+213,UTIX,UTI S&P BSE Sensex Next 50
+214,MOTP,Motilal Oswal S&P BSE Quality
+215,ICIP,ICICI Prudential Liquid
+216,SBET,Goldman Sachs CNX Nifty Shariah BeES
+217,AXIP,Axis S&P BSE Sensex
+218,KOTU,Kotak NIFTY India Consumption
+219,SIFU,SBI Nifty Private Bank
+220,BHAB,BHARAT Bond ETF April 2030 Growth
+221,AITY,Birla Sun Life Gold
+222,MIRI,Mirae Asset Nifty India Manufacturing
+223,MIRT,Mirae Asset ESG Sector Leaders
+224,MIRE,Mirae Asset Nifty Next 50
+225,MOTW,Motilal Oswal S&P BSE Healthcare
+226,ICII,ICICI Prudential Sensex iWIN
+227,ICIA,ICICI Prudential Bank
+228,AXIH,Axis Healthcare
+229,LICO,LIC MF Nifty 50
+230,MOSP,Motilal Oswal S&P BSE Low Volatility
+231,ADIL,Aditya Birla Sun Life Banking
+232,NIPI,Nippon India Sensex
+233,IFRB,Goldman Sachs Infrastructure BeES
+234,M50,Motilal Oswal MOSt Shares M50
+235,ICIU,ICICI Prudential Midcap Select iWIN
+236,DSPT,DSP Nifty 50
+237,SBIS,SBI Sensex
+238,SBIF,SBI Nifty Bank
+239,MIRD,Mirae Asset Nifty 1D Rate Liquid
+240,DSPF,DSP Nifty Midcap 150 Quality 50
+241,IICA,ICICI Prudential Nifty Commodities
+242,DSPU,DSP Nifty PSU Bank
+243,DSPI,DSP Nifty Bank
+244,BHRB,BHARAT Bond April 2032 Growth
+245,SIET,SBI Quality
+246,DSPY,DSP Nifty IT
+247,LICU,LIC MF Nifty 100
+248,MIRK,Mirae Asset Nifty Bank
+249,MIRN,Mirae Asset Nifty Financial Services
+250,UTIY,UTI Nifty Midcap 150
+251,DSPX,DSP S&P BSE Sensex
+252,HDFP,HDFC Nifty Private Bank
+253,NIPO,Reliance R Shares CNX 100
+254,HDSE,HDFC Sensex
+255,KTMF,Kotak Sensex Exchange Traded Scheme
+256,HDFF,HDFC Nifty 100
+257,ADIG,Aditya BSL CRISIL Liquid Ovrnght
+258,DSPS,DSP Silver
+259,LICF,IDBI Gold
+260,BIRA,Aditya Birla Sun Life Sensex
+261,UTIF,UTI Nifty IT
+262,HFCS,HDFC S&P BSE 500
+263,UTIS,UTI Sensex
+264,NIPA,Nippon India Nifty SDL - 2026 Maturity
+265,ICII,ICICI Prudential Sensex iWIN
+266,SBET,Goldman Sachs CNX Nifty Shariah BeES
+267,MIRF,Mirae Asset Nifty 100 Low Volatility 30
+268,UTIN,UTI Nifty
+269,DSPL,DSP BR Liquid NS
+270,QUAN,Quantum
+271,KTPU,Kotak PSU Bank
+272,AXIG,Axis Banking
+273,MIRL,Mirae Asset Silver
+274,AXIE,Axis Technology ETF
+275,TATF,Tata Nifty Private Bank
+276,HDFO,HDFC NIFTY100 Low Volatility 30
+277,KOTM,Kotak Banking
+278,MOTE,Motilal Oswal S&P BSE Enhanced Value
+279,HDFK,HDFC Nifty PSU Bank
+280,QUAN,Quantum
+281,HDFY,HDFC NIFTY Growth Sectors 15
+282,UTIX,UTI S&P BSE Sensex Next 50
+283,MIRK,Mirae Asset Nifty Bank
+284,BANY,Bandhan Nifty 50
+285,ADIQ,Aditya Birla Sun Life Nifty 200 Quality 30
+286,MIRT,Mirae Asset ESG Sector Leaders
+287,UTIY,UTI Nifty Midcap 150
+288,UTIS,UTI Sensex
+289,MOTP,Motilal Oswal S&P BSE Quality
+290,HDFV,HDFC NIFTY50 Value 20
+291,ICIQ,ICICI Prudential Nifty 200 Quality 30
+292,INVS,Invesco India Gold
+293,LICM,LIC MF Sensex
+294,SBIE,SBI BSE 100
+295,DSPN,DSP Nifty 50 Equal Weight
+296,AXIH,Axis Healthcare
+297,LICU,LIC MF Nifty 100
+298,DSPR,DSP Nifty Private Bank
+299,M50,Motilal Oswal MOSt Shares M50
+300,INVS,Invesco India Gold
+301,LICF,IDBI Gold
+302,MOSP,Motilal Oswal S&P BSE Low Volatility
+303,DSPF,DSP Nifty Midcap 150 Quality 50
+304,AITB,Aditya Birla Sun Life Nifty IT
+305,INVO,Invesco India Nifty
+306,HDFD,HDFC Nifty 1D Rate Liquid
+307,IIPR,ICICI Prudential Nifty Oil & Gas
+308,MIRY,Mirae Asset Nifty 8-13 yr G-Sec
+309,IDTI,Indiabulls NIFTY50
+310,DSPH,DSP Nifty Healthcare
+311,UTIE,UTI Nifty 10 yr Benchmark G-Sec
+312,BARS,Baroda BNP Paribas Gold
+313,BARB,BHARAT Bond ETF April 2023 Growth
+314,SBII,SBI NIFTY 1D Rate
+315,NAVY,Navi Nifty 50
+316,UTIT,UTI Nifty 5 Yr Benchmark G-Sec
+317,BHAB,BHARAT Bond ETF April 2030 Growth
+318,AXIP,Axis S&P BSE Sensex
+319,HDFD,HDFC Nifty 1D Rate Liquid
+320,SBIT,SBI Sensex Next 50
+321,BARE,BHARAT Bond ETF April 2031 Growth
+322,BARF,BHARAT Bond ETF April 2025 Growth
+323,ICCR,ICICI Prudential Nifty Metal
+324,MOTF,Motilal Oswal Nifty India Defence
+325,AXIE,Axis Technology ETF
+326,IIPR,ICICI Prudential Nifty Oil & Gas
+327,GRON,Groww Nifty EV & New Age Automotive
+328,BHRB,BHARAT Bond April 2032 Growth
+329,MIRY,Mirae Asset Nifty 8-13 yr G-Sec
+330,LICO,LIC MF Nifty 50
+331,DSPI,DSP Nifty Bank
+332,LICM,LIC MF Sensex
+333,BANP,Bandhan S&P BSE Sensex
+334,IICE,ICICI Prudential 5 Year G-SEC
+335,NIPL,Nippon India Nifty CPSE Bond Plus SDL - 2024 Matur
+336,MOTL,Motilal Oswal 5 Year G-Sec
+337,HDFT,HDFC NIFTY100 Quality 30
+338,BRAO,BHARAT Bond - April 2033
+339,ICIK,ICICI Prudential Nifty 10 yr Benchmark G-Sec
+340,HFCN,HDFC Nifty IT
+341,MIRF,Mirae Asset Nifty 100 Low Volatility 30
+342,DSPX,DSP S&P BSE Sensex
+343,BARB,BHARAT Bond ETF April 2023 Growth

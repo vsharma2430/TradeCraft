@@ -1,10 +1,13 @@
-# Import the Required modules
 from tkinter import *
 from base.stock_price import *
 
 def stock_price():
-    price,share = getStockPrice(e1.get())
-    Current_stock.set(price)
+    try:
+        price = getStockPrice(e1.get())
+        Current_stock.set(f'{price}')
+    finally:
+        Current_stock.set(f'Failed')
+
 
 if(__name__ == '__main__'):
     master = Tk()
