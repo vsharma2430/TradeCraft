@@ -9,14 +9,16 @@ if(__name__ == '__main__'):
 
     for key in etf_obj:
         etfX = etf_obj[key]
-        print(f'{key} {etfX['NAME']}')
+        print(f'{key} {etfX['SYMBOL']} {etfX['NAME']}')
     
     index_no = input()
-    stock_name = f'{etf_obj[int(index_no)]['SYMBOL']}.NS'
+    
+    stock_name = f'{etf_obj[int(index_no)]['SYMBOL']}'
+    stock_sym = get_stock_symbol(stock_name)
 
-    df = getHistoricalData(stock_name)
+    df = get_historical_data(stock_sym)
     df.columns = df.columns.str.replace(' ', '') 
     print(df)
 
-    df.plot(kind='line',x='Date',y='Close')
+    df.plot(kind='line',y='Close')
     plt.show()

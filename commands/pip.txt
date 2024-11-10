@@ -3,5 +3,7 @@ pip install jugaad-data
 pip install nselib
 pip install PyQt5
 pip install matplotlib
-pip3 install sklearn-model
+pip install sklearn-model
 pip install rocketry
+pip install "fastapi[standard]"
+pip install uvicorn

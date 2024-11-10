@@ -10,7 +10,7 @@ def getStockPrice(STK:str,stock_type:Stock_Type=None)->str:
     if(stock_ticker!=None):
         
         if(stock_type == None):
-            stock_type = getStockType(stock_ticker)
+            stock_type = get_stocktype_from_ticker(stock_ticker)
 
         if(stock_type == Stock_Type.EQUITY):
             return f'{getDataFromDict(stock_ticker,'currentPrice')}'

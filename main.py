@@ -14,8 +14,7 @@ if(__name__ == '__main__'):
     Current_stock = StringVar()
     Label(master, text="Company Symbol : ").grid(row=0, sticky=W)
     Label(master, text="Price : ").grid(row=3, sticky=W)
-    result2 = Label(master, text="", textvariable=Current_stock,
-                    ).grid(row=3, column=1, sticky=W)
+    result2 = Label(master, text="", textvariable=Current_stock,).grid(row=3, column=1, sticky=W)
     
     e1 = Entry(master)
     e1.grid(row=0, column=1)
