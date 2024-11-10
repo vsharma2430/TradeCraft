@@ -13,6 +13,6 @@ def getStockPrice(STK:str,stock_type:Stock_Type=None)->str:
             stock_type = get_stocktype_from_ticker(stock_ticker)
 
         if(stock_type == Stock_Type.EQUITY):
-            return f'{getDataFromDict(stock_ticker,'currentPrice')}'
+            return f'{get_data_from_dict(stock_ticker,'currentPrice')}'
         elif(stock_type == Stock_Type.ETF):
-            return f'{getDataFromDict(stock_ticker,'bid')} - {getDataFromDict(stock_ticker,'ask')}'
+            return f'{get_data_from_dict(stock_ticker,'bid')} - {get_data_from_dict(stock_ticker,'ask')}'

@@ -16,7 +16,7 @@ if(__name__ == '__main__'):
     stock_name = f'{etf_obj[int(index_no)]['SYMBOL']}'
     stock_sym = get_stock_symbol(stock_name)
 
-    df = get_historical_data(stock_sym)
+    df = get_historical_data(stock_sym)['df']
     df.columns = df.columns.str.replace(' ', '') 
     print(df)
 

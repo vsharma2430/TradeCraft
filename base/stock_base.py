@@ -19,9 +19,9 @@ def get_stock_exchange(exchange:str)->Stock_Exchange:
         return Stock_Exchange.BSE
 
 def get_stocktype_from_ticker(stock_ticker:yf.Ticker)->Stock_Type:
-    if(getDataFromDict(stock_ticker,'currentPrice')!=None):
+    if(get_data_from_dict(stock_ticker,'currentPrice')!=None):
         return Stock_Type.EQUITY
-    elif(getDataFromDict(stock_ticker,'bid')!=None and getDataFromDict(stock_ticker,'ask')!=None):
+    elif(get_data_from_dict(stock_ticker,'bid')!=None and get_data_from_dict(stock_ticker,'ask')!=None):
         return Stock_Type.ETF
     
 def get_stock_symboltype(stock:str)->Stock_Symbol:

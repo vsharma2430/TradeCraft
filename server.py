@@ -77,8 +77,10 @@ async def root(request: Request):
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
 async def read_item(request: Request,stk_id:str):
-    
-    history_html = get_historical_data(stk_id).to_html().replace('dataframe','table')
+    history_data = get_historical_data(stk_id)
+    history_data_html = history_data['df'].to_html().replace('dataframe','table')
+    average_price = round(history_data['price'],3)
+    average_volume =  "{:,}".format(round(history_data['volume']))
     
     return templates.TemplateResponse(
         request=request, 
@@ -86,5 +88,9 @@ async def read_item(request: Request,stk_id:str):
         context={
             'title':f'Stock History : {stk_id}',
             'stock_id':stk_id,
-            'history': history_html}
+            'cmp': '',
+            'dma':average_price,
+            'change':'',
+            'volume':average_volume,
+            'history': history_data_html}
     )
