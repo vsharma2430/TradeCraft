@@ -1,13 +1,18 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from base.stock_history import *
 import datetime as dt
 import matplotlib.pyplot as plt
 from data_scrape.read_raw import get_df_nse_etf
 from invest.base import get_stock_list
-from fastapi.responses import HTMLResponse
 
 app = FastAPI()
-
+app.mount('/static', StaticFiles(directory='static'), name='static')
+templates = Jinja2Templates(directory='templates')
+template_stock_list = 'stock_list.html'
+template_stock_data = 'stock_data.html'
 # root
 
 @app.get('/')
@@ -35,23 +40,51 @@ async def root():
 # lists
 
 @app.get('/etf/list/')
-async def root():
+async def root(request: Request):
     obj = get_stock_list()
-    return obj
+    
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title':'STOCK LISTS',
+            'list':[{ 'caption':str(key) , 'href' : f'/etf/list/{key}'} for key in obj],
+            }
+    )
 
 @app.get('/etf/list/{list_id}')
-async def root(list_id):
+async def root(request: Request,list_id:str):
     obj = get_stock_list()
+    
     if(list_id in obj):
-        return obj[list_id]
-    return {'message': f' {list_id}) not present'}
+        
+        return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title': f'STOCKS in {obj[list_id]['NAME']}',
+            'list':[{ 'caption': key['SYMBOL'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} for key in obj[list_id]['STOCK']],
+            }
+    )
+    
+    return {'message': f' ({list_id}) not present'}
 
 # history 
 
 @app.get('/etf/history/')
-async def root():
+async def root(request: Request):
     return {'message': 'history'}
 
-@app.get('/etf/history/{stk_id}/')
-async def read_item(stk_id):
-    return HTMLResponse(get_historical_data(get_stock_symbol(stk_id)).to_html())
+@app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
+async def read_item(request: Request,stk_id:str):
+    
+    history_html = get_historical_data(stk_id).to_html().replace('dataframe','table')
+    
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_data, 
+        context={
+            'title':f'Stock History : {stk_id}',
+            'stock_id':stk_id,
+            'history': history_html}
+    )
