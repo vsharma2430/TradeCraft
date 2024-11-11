@@ -3,6 +3,8 @@ from base.misc import *
 from base.stock_base import *
 from base.stock_price import *
 from logging import getLogger
+from pandas import DataFrame
+from base.stock_chart import *
 
 logger = getLogger('uvicorn.error')
 
@@ -35,6 +37,7 @@ def get_historical_data(STK:str,
             'volume_365':average_volume_365,
             } 
 
+
 def get_history_context(STK:str,
                         session=None):
     history_data = get_historical_data(STK,session=session)
@@ -55,5 +58,6 @@ def get_history_context(STK:str,
             'volume_30':get_format(get_round(get_data_from_dict(history_data,'volume_30'))),
             'volume_90':get_format(get_round(get_data_from_dict(history_data,'volume_90'))),
             'volume_365':get_format(get_round(get_data_from_dict(history_data,'volume_365'))),
-            'history': history_data_html
+            'history': history_data_html,
+            'chart':get_chart(get_data_from_dict(history_data,'df'))
             }

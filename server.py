@@ -56,29 +56,29 @@ async def root():
 
 @app.get('/etf/list/')
 async def root(request: Request):
-    obj = get_stock_list(session=session)
+    stock_list_object = get_stock_list(session=session)
     
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
         context={
             'title':'STOCK LISTS',
-            'list':[{ 'caption':str(key) , 'href' : f'/etf/list/{key}'} for key in obj],
+            'list':[{ 'caption':str(key) , 'href' : f'/etf/list/{key}'} for key in stock_list_object],
             }
     )
 
 @app.get('/etf/list/{list_id}')
 async def root(request: Request,list_id:str):
-    obj = get_stock_list(session=session)
+    stock_list_object = get_stock_list(session=session)
     
-    if(list_id in obj):
+    if(list_id in stock_list_object):
         
         return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
         context={
-            'title': f'STOCKS in {obj[list_id]['NAME']}',
-            'list':[{ 'caption': key['SYMBOL'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} for key in obj[list_id]['STOCK']],
+            'title': f'STOCKS in {stock_list_object[list_id]['NAME']}',
+            'list':[{ 'caption': key['SYMBOL'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} for key in stock_list_object[list_id]['STOCK']],
             }
     )
     

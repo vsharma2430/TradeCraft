@@ -20,13 +20,22 @@ def get_date(text:str):
     return text
 
 def get_change(initial:float,final:float)->float:
-    return (final - initial) / initial
+    if(initial!=None or final != None or initial!=0):
+        return (final - initial) / initial
+    return 0
 
 def get_change_percentage(initial:float,final:float,n_digits:int=2)->float:
-    return round((final - initial) / initial * 100,2)
+    if(initial!=None or final != None or initial!=0):
+        return round((final - initial) / initial * 100,2)
+    return 0
 
 def get_round(data):
-    return round(data,3)
+    if(data!=None):
+        return round(data,3)
+    return 0
 
 def get_format(data):
-    return "{:,}".format(data)
+    if(data!=None):
+        return "{:,}".format(data)
+    return 0
+    
