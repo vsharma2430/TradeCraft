@@ -22,6 +22,9 @@ def get_date(text:str):
 def get_change(initial:float,final:float)->float:
     return (final - initial) / initial
 
+def get_change_percentage(initial:float,final:float,n_digits:int=2)->float:
+    return round((final - initial) / initial * 100,2)
+
 def get_round(data):
     return round(data,3)
 

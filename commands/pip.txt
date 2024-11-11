@@ -1,4 +1,7 @@
-pip install yfinance
+pip install "yfinance[nospam,repair]"
+pip install requests-cache
+pip install requests-ratelimiter
+pip install pyrate-limiter
 pip install jugaad-data
 pip install nselib
 pip install PyQt5

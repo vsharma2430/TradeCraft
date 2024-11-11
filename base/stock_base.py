@@ -3,8 +3,11 @@ import datetime as dt
 from base.misc import *
 from base.stock_type import *
 
-def get_ticker(STK:str)->yf.Ticker:
-    return yf.Ticker(STK)
+def get_ticker(STK:str, session=None)->yf.Ticker:
+    if(session==None):
+        return yf.Ticker(STK)
+    else:
+        return yf.Ticker(ticker=STK,session=session)
 
 def get_ticker_info(STK:str):
     ticker:yf.Ticker = get_ticker(STK)
