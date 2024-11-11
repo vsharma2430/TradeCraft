@@ -8,6 +8,7 @@ from base.stock_chart import *
 
 logger = getLogger('uvicorn.error')
 
+@timeit
 def get_historical_data(STK:str,
                         start_date:dt.date = (dt.datetime.now()-dt.timedelta(days=365)).date(),
                         end_date:dt.date=dt.datetime.now().date(),
@@ -37,14 +38,27 @@ def get_historical_data(STK:str,
             'volume_365':average_volume_365,
             } 
 
+def get_current_data(STK:str,
+                     session=None):
+        return  {
+                'current_stock_price' : get_round(get_stock_price(STK,Stock_Type.ETF))
+        }
+        
+def get_dma_change(history_data:dict,current_data:dict):
+        average_price = get_round(get_data_from_dict(history_data,'dma_30'))
+        current_stock_price = get_data_from_dict(current_data,'current_stock_price')
+        return get_change_percentage(average_price,current_stock_price)
 
 def get_history_context(STK:str,
                         session=None):
     history_data = get_historical_data(STK,session=session)
-    history_data_html = get_data_from_dict(history_data,'df').to_html().replace('dataframe','table table-fixed')
-    average_price = get_round(get_data_from_dict(history_data,'dma_30'))
-    current_stock_price = get_round(get_stock_price(STK))
-    change = get_change_percentage(average_price,current_stock_price)
+    current_data = get_current_data(STK,session=session)
+    
+    history_data_df : DataFrame = get_data_from_dict(history_data,'df')
+    history_data_html = history_data_df.to_html().replace('dataframe','table table-fixed')
+    current_stock_price = get_data_from_dict(current_data,'current_stock_price')
+    
+    change = get_dma_change(history_data,current_data)
 
     return {
             'title':f'Stock History : {STK}',
@@ -59,5 +73,5 @@ def get_history_context(STK:str,
             'volume_90':get_format(get_round(get_data_from_dict(history_data,'volume_90'))),
             'volume_365':get_format(get_round(get_data_from_dict(history_data,'volume_365'))),
             'history': history_data_html,
-            'chart':get_chart(get_data_from_dict(history_data,'df'))
+            'chart':get_chart(history_data_df)
             }

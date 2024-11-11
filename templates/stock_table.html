@@ -1,0 +1,27 @@
+<table class="table caption-top">
+    <caption class="display-6">{{list.table_head}}</caption>
+
+    <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Stock</th>
+          <th scope="col">Change</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for item in list.table %}
+            <tr>
+                <th scope="row">{{item.rank}}</th>
+                <td>
+                    <a class="link-offset-2 link-underline link-underline-opacity-0" href="{{ item.href }}">
+                    {{ item.caption }} 
+                    </a>
+                </td>
+                <td>{{item.change}}</td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>

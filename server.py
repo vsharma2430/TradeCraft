@@ -12,12 +12,13 @@ from pyrate_limiter import Duration, RequestRate, Limiter
 from base.stock_history import *
 from base.stock_price import *
 from base.misc import *
-from invest.base import get_stock_list
+from invest.base import get_stock_list,get_stock_list_context
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
 template_stock_list = 'stock_list.html'
+template_stock_list_stocks = 'stock_list_stocks.html'
 template_stock_data = 'stock_data.html'
 class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
     pass
@@ -73,13 +74,11 @@ async def root(request: Request,list_id:str):
     
     if(list_id in stock_list_object):
         
+        context = get_stock_list_context(list_id,stock_list_object)
         return templates.TemplateResponse(
         request=request, 
-        name=template_stock_list, 
-        context={
-            'title': f'STOCKS in {stock_list_object[list_id]['NAME']}',
-            'list':[{ 'caption': key['SYMBOL'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} for key in stock_list_object[list_id]['STOCK']],
-            }
+        name=template_stock_list_stocks, 
+        context=context
     )
     
     return {'message': f' ({list_id}) not present'}

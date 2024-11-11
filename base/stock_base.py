@@ -24,7 +24,11 @@ def get_stock_exchange(exchange:str)->Stock_Exchange:
 def get_stocktype_from_ticker(stock_ticker:yf.Ticker)->Stock_Type:
     if(get_data_from_dict(stock_ticker,'currentPrice')!=None):
         return Stock_Type.EQUITY
-    elif(get_data_from_dict(stock_ticker,'bid')!=None and get_data_from_dict(stock_ticker,'ask')!=None):
+    elif(   (get_data_from_dict(stock_ticker,'bid')!=None and get_data_from_dict(stock_ticker,'ask')!=None)
+         or (get_data_from_dict(stock_ticker,'symbol')!=None and 'ETF' in get_data_from_dict(stock_ticker,'symbol'))
+         or (get_data_from_dict(stock_ticker,'longName')!=None and 'ETF' in get_data_from_dict(stock_ticker,'longName'))
+         or (get_data_from_dict(stock_ticker,'shortName')!=None and 'ETF' in get_data_from_dict(stock_ticker,'shortName'))
+        ):
         return Stock_Type.ETF
     
 def get_stock_symboltype(stock:str)->Stock_Symbol:
