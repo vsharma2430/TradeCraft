@@ -1,6 +1,6 @@
 from base.misc import *
 from base.stock_base import *
-from base.stock_type import Stock_Type
+from base.stock_enum import Stock_Type
 
 def get_stock_price(STK:str,stock_type:Stock_Type=None)->float:
     stock_ticker = get_ticker_info(STK)

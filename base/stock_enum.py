@@ -13,3 +13,7 @@ class Stock_Symbol(Enum):
     PLAIN = 1
     GFIN = 2
     YFIN = 3
+    
+class Stock_Trade(Enum):
+    BUY = 1
+    SELL = 2

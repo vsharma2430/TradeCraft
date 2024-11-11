@@ -1,7 +1,7 @@
 import yfinance as yf
 import datetime as dt
 from base.misc import *
-from base.stock_type import *
+from base.stock_enum import *
 
 def get_ticker(STK:str, session=None)->yf.Ticker:
     if(session==None):
