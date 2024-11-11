@@ -61,3 +61,14 @@ def convert_gfinToyfin(stock:str)->str:
         return get_stock_symbol(data_stk,data_se)
     
     return stock
+
+def get_yfin_symbol(stock:str)->str:
+    s_stype = get_stock_symboltype(stock)
+    stk = stock
+    if(s_stype == Stock_Symbol.PLAIN):
+        stk = get_stock_symbol(stock)
+    elif (s_stype == Stock_Symbol.GFIN):
+        stk = convert_gfinToyfin(stock)
+    return stk
+    
+    

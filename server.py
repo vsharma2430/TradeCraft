@@ -3,8 +3,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from base.stock_history import *
-import datetime as dt
-import matplotlib.pyplot as plt
+from base.stock_price import *
+from base.misc import *
 from data_scrape.read_raw import get_df_nse_etf
 from invest.base import get_stock_list
 
@@ -76,21 +76,10 @@ async def root(request: Request):
     return {'message': 'history'}
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
-async def read_item(request: Request,stk_id:str):
-    history_data = get_historical_data(stk_id)
-    history_data_html = history_data['df'].to_html().replace('dataframe','table')
-    average_price = round(history_data['price'],3)
-    average_volume =  "{:,}".format(round(history_data['volume']))
-    
+def stock_history(request: Request,stk_id:str):
+    context = get_history_context(stk_id)
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_data, 
-        context={
-            'title':f'Stock History : {stk_id}',
-            'stock_id':stk_id,
-            'cmp': '',
-            'dma':average_price,
-            'change':'',
-            'volume':average_volume,
-            'history': history_data_html}
+        context=context
     )

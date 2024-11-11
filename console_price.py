@@ -11,4 +11,4 @@ if(__name__ == '__main__'):
 
     index_no = input()
     stock_name = f'{etf_obj[int(index_no)]['SYMBOL']}.NS'
-    print(getStockPrice(stock_name))
+    print(get_stock_price_print(stock_name))

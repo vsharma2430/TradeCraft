@@ -3,7 +3,7 @@ from base.stock_price import *
 
 def stock_price():
     try:
-        price = getStockPrice(e1.get())
+        price = get_stock_price_print(e1.get())
         Current_stock.set(f'{price}')
     finally:
         Current_stock.set(f'Failed')

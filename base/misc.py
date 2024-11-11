@@ -18,3 +18,12 @@ def get_date(text:str):
         date = datetime.strptime(match.group(), '%Y-%d-%m').date()
         return date.strftime('%d-%m-%Y')
     return text
+
+def get_change(initial:float,final:float)->float:
+    return (final - initial) / initial
+
+def get_round(data):
+    return round(data,3)
+
+def get_format(data):
+    return "{:,}".format(data)
