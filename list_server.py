@@ -11,7 +11,7 @@ from pyrate_limiter import Duration, RequestRate, Limiter
 from base.stock_history import *
 from base.stock_price import *
 from base.misc import *
-from invest.base import get_stock_list,get_stock_list_context
+from invest.base import *
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
@@ -48,31 +48,30 @@ def stock_price(request: Request,stk_id:str):
 
 @app.get('/etf/list/')
 async def root(request: Request):
-    stock_list_object = get_stock_list(session=session)
+    files_object = get_file_stocks_object()
     
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
         context={
             'title':'STOCK LISTS',
-            'list':[{ 'caption':str(key) , 'href' : f'/etf/list/{key}'} for key in stock_list_object],
+            'list':[{ 'caption':str(key) , 'href' : f'/etf/list/{key}'} for key in files_object],
             }
     )
 
 @app.get('/etf/list/{list_id}')
 async def root(request: Request,list_id:str):
-    stock_list_object = get_stock_list(session=session)
+    stock_list_object = get_stock_list_data(session=session,file_name=list_id)
+    context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object)
     
-    if(list_id in stock_list_object):
-        
-        context = get_stock_list_context(list_id,stock_list_object)
+    if(context['status'] == 'success'):
         return templates.TemplateResponse(
-        request=request, 
-        name=template_stock_list_stocks, 
-        context=context
-    )
-    
-    return {'message': f' ({list_id}) not present'}
+            request=request, 
+            name=template_stock_list_stocks, 
+            context=context
+        )
+    else:
+        return JSONResponse(context)
 
 # history 
 

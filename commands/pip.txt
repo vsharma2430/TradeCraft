@@ -14,3 +14,4 @@ pip install uvicorn
 pip install plotly
 pip install pydantic
 pip install GitPython
+pip install nsepython

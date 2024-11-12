@@ -5,6 +5,7 @@ from base.stock_price import *
 from logging import getLogger
 from pandas import DataFrame
 from base.stock_chart import *
+from base.stock_candle_stick_pattern import *
 
 logger = getLogger('uvicorn.error')
 
@@ -13,11 +14,12 @@ def get_historical_data(STK:str,
                         start_date:dt.date = (dt.datetime.now()-dt.timedelta(days=365)).date(),
                         end_date:dt.date=dt.datetime.now().date(),
                         session=None):
-    logger.info(f'Fetcing data for {STK}')
+    #logger.info(f'Fetcing data for {STK}')
 
     STK = get_yfin_symbol(STK)
     stk_ticker= get_ticker(STK=STK,session=session)
     stk_historical_df = stk_ticker.history(start=start_date, end=end_date)
+    stk_historical_df = candle_df(stk_historical_df)
     
     average_price_30 = average([stk_historical_df['Open'].tail(20).mean() , stk_historical_df['Close'].tail(20).mean()])
     average_price_90 = average([stk_historical_df['Open'].tail(60).mean() , stk_historical_df['Close'].tail(60).mean()])
@@ -55,7 +57,7 @@ def get_history_context(STK:str,
     current_data = get_current_data(STK,session=session)
     
     history_data_df : DataFrame = get_data_from_dict(history_data,'df')
-    history_data_html = history_data_df.to_html().replace('dataframe','table table-fixed')
+    history_data_html = history_data_df[::-1].to_html().replace('dataframe','table table-fixed')
     current_stock_price = get_data_from_dict(current_data,'current_stock_price')
     
     change = get_dma_change(history_data,current_data)
