@@ -29,7 +29,7 @@ def get_stock_list(session=None):
             current = get_current_data(STK=stock,session=session)
             change  = get_dma_change(history_data=history,current_data=current)
             current_stock_price = get_round(get_data_from_dict(current,'current_stock_price'))
-            units = round(order_price / current_stock_price)
+            units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
             stocks.append({
                         'RANK' : count,
                         'SYMBOL': stock , 

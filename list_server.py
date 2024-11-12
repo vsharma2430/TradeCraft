@@ -13,8 +13,8 @@ from base.stock_price import *
 from base.misc import *
 from invest.base import get_stock_list,get_stock_list_context
 
-list_app = FastAPI()
-list_app.mount('/static', StaticFiles(directory='static'), name='static')
+app = FastAPI()
+app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
 template_stock_list = 'stock_list.html'
 template_stock_list_stocks = 'stock_list_stocks.html'
@@ -30,23 +30,23 @@ session = CachedLimiterSession(
 
 # root
 
-@list_app.get('/')
+@app.get('/')
 async def root():
     return {'message': 'Welcome to PyETF server!'}
 
-@list_app.get('/etf/')
+@app.get('/etf/')
 async def root():
     return {'message': 'etf main page'}
 
 #price
 
-@list_app.get('/etf/price/{stk_id}/',response_class=JSONResponse)
+@app.get('/etf/price/{stk_id}/',response_class=JSONResponse)
 def stock_price(request: Request,stk_id:str):
     return {'price': get_stock_price(STK=stk_id,session=None)}
 
 # lists
 
-@list_app.get('/etf/list/')
+@app.get('/etf/list/')
 async def root(request: Request):
     stock_list_object = get_stock_list(session=session)
     
@@ -59,7 +59,7 @@ async def root(request: Request):
             }
     )
 
-@list_app.get('/etf/list/{list_id}')
+@app.get('/etf/list/{list_id}')
 async def root(request: Request,list_id:str):
     stock_list_object = get_stock_list(session=session)
     
@@ -76,11 +76,11 @@ async def root(request: Request,list_id:str):
 
 # history 
 
-@list_app.get('/etf/history/')
+@app.get('/etf/history/')
 async def root(request: Request):
     return {'message': 'history'}
 
-@list_app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
+@app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
 def stock_history(request: Request,stk_id:str):
     context = get_history_context(STK=stk_id,session=session)
     return templates.TemplateResponse(
@@ -88,3 +88,4 @@ def stock_history(request: Request,stk_id:str):
         name=template_stock_data, 
         context=context
     )
+
