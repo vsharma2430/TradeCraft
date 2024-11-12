@@ -44,6 +44,9 @@ def get_format(data):
         return "{:,}".format(data)
     return 0
 
+def get_percentage_format(data:float):
+    return "{:.0%}".format(float(data))
+
 def timeit(func):
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):

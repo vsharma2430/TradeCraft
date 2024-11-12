@@ -9,6 +9,23 @@
     <body>
         {% include 'top_navbar.html' %}
 
+        <table class="table" style="table-layout: fixed;width: 96%;margin: 2%;">
+            <thead>
+              <tr>
+                <th scope="col">Capital</th>
+                <th scope="col">Target</th>
+                <th scope="col">Order Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{settings.capital}}</td>
+                <td>{{settings.sell_target}}</td>
+                <td>{{settings.order_price}}</td>
+              </tr>
+            </tbody>
+          </table>
+
         <div class="d-flex">
             <div style="width: 40%;margin: 2%;">
                 {% with list=list_buy %}

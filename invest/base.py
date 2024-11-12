@@ -56,6 +56,7 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,n_stocks:int=10):
         
     return {
             'title': f'STOCKS in {stock_list_object[list_id]['NAME']}',
+            'settings' : get_settings() ,
             'list_buy': 
             {
                 'table_head':'BUY',
