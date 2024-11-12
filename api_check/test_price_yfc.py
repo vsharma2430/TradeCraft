@@ -1,4 +1,5 @@
-import yfinance as yf
+import yfinance_cache as yf
+
 
 info1 = yf.Ticker('TATAMOTORS.NS').info
 info2 = yf.Ticker('NIFTYBEES.NS').info

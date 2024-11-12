@@ -2,15 +2,26 @@ import yfinance as yf
 import datetime as dt
 from base.misc import *
 from base.stock_enum import *
+from requests import get
+from urllib.parse import urljoin
+from invest.investment_target import price_server
+#import yfinance_cache as yf
 
 def get_ticker(STK:str, session=None)->yf.Ticker:
     if(session==None):
-        return yf.Ticker(STK)
+        return yf.Ticker(STK,session=session)
     else:
         return yf.Ticker(ticker=STK,session=session)
+    
+def get_ticker_info_price_server(STK:str)->yf.Ticker:
+    req = get(url=urljoin(price_server,STK))
+    if(req.status_code == 200):
+        return req.json()['ticker']
+    else:
+        return None
 
-def get_ticker_info(STK:str):
-    ticker:yf.Ticker = get_ticker(STK)
+def get_ticker_info(STK:str, session=None):
+    ticker:yf.Ticker = get_ticker(STK=STK,session=session)
     if(ticker!=None):
         return ticker.info
     return None

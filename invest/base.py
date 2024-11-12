@@ -4,6 +4,7 @@ from pathlib import Path
 from base.stock_base import convert_gfinToyfin
 from base.stock_history import *
 from base.misc import *
+from invest.investment_target import *
 
 stock_csv_folder = r'invest\stock_list'
 
@@ -27,12 +28,16 @@ def get_stock_list(session=None):
             history = get_historical_data(STK=stock,session=session)
             current = get_current_data(STK=stock,session=session)
             change  = get_dma_change(history_data=history,current_data=current)
+            current_stock_price = get_round(get_data_from_dict(current,'current_stock_price'))
+            units = round(order_price / current_stock_price)
             stocks.append({
                         'RANK' : count,
                         'SYMBOL': stock , 
                         'HISTORY' : get_historical_data(STK=stock,session=session),
                         'CURRENT' : get_current_data(STK=stock,session=session),
                         'CHANGE' : get_round(change),
+                        'PRICE' : current_stock_price,
+                        'UNITS' : units
                         })
             count = count + 1
             
@@ -54,19 +59,19 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,n_stocks:int=10):
             'list_buy': 
             {
                 'table_head':'BUY',
-                'table' : [{'rank':key['RANK'], 'caption': key['SYMBOL'], 'change' : key['CHANGE'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} 
+                'table' : [{'rank':key['RANK'], 'caption': key['SYMBOL'], 'change' : key['CHANGE'] , 'price' : key['PRICE'] , 'units' : key['UNITS'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} 
                 for key in stock_list_object[list_id]['STOCK_BUY'][0:n_stocks]],    
             },
             'list_sell':
             {
                 'table_head':'SELL',
-                'table' : [{'rank':key['RANK'], 'caption': key['SYMBOL'], 'change' : key['CHANGE'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} 
+                'table' : [{'rank':key['RANK'], 'caption': key['SYMBOL'], 'change' : key['CHANGE'] , 'price' : key['PRICE'] , 'units' : key['UNITS'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} 
                 for key in stock_list_object[list_id]['STOCK_SELL'][0:n_stocks]],    
             },
             'list':
             {
                 'table_head':'LIST',
-                'table' : [{'rank':key['RANK'], 'caption': key['SYMBOL'], 'change' : key['CHANGE'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} 
+                'table' : [{'rank':key['RANK'], 'caption': key['SYMBOL'], 'change' : key['CHANGE'] , 'price' : key['PRICE'] , 'units' : key['UNITS'] , 'href' : f'/etf/history/{key['SYMBOL']}/'} 
                 for key in stock_list_object[list_id]['STOCKS']],    
             }
         }

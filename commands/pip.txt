@@ -1,4 +1,5 @@
 pip install "yfinance[nospam,repair]"
+pip install yfinance-cache
 pip install requests-cache
 pip install requests-ratelimiter
 pip install pyrate-limiter
@@ -12,3 +13,4 @@ pip install "fastapi[standard]"
 pip install uvicorn
 pip install plotly
 pip install pydantic
+pip install GitPython

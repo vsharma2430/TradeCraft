@@ -41,7 +41,7 @@ def get_historical_data(STK:str,
 def get_current_data(STK:str,
                      session=None):
         return  {
-                'current_stock_price' : get_round(get_stock_price(STK,Stock_Type.ETF))
+                'current_stock_price' : get_round(get_price_server_stock_price(STK,Stock_Type.ETF))
         }
         
 def get_dma_change(history_data:dict,current_data:dict):

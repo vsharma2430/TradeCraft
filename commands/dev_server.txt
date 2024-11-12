@@ -1,2 +1,2 @@
-fastapi dev server.py
+fastapi dev list_server.py
 

@@ -12,7 +12,7 @@ def stock_price():
 if(__name__ == '__main__'):
     master = Tk()
     Current_stock = StringVar()
-    Label(master, text="Company Symbol : ").grid(row=0, sticky=W)
+    Label(master, text="Symbol : ").grid(row=0, sticky=W)
     Label(master, text="Price : ").grid(row=3, sticky=W)
     result2 = Label(master, text="", textvariable=Current_stock,).grid(row=3, column=1, sticky=W)
     
