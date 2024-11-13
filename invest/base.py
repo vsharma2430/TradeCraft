@@ -8,8 +8,8 @@ from invest.investment_target import *
 
 stock_csv_folder = r'invest\stock_list'
 
-def get_file_stocks_object():
-    array_files = listdir(stock_csv_folder)
+def get_file_stocks_object(folder_location = stock_csv_folder):
+    array_files = listdir(folder_location)
     
     list_name : str
     file_stocks = {}
@@ -34,21 +34,21 @@ def get_stock_list_data(session=None,file_name=None,buy_count:int=10,sell_count:
     if(file_name != None and file_name in file_stocks):
         stock_download_list = file_stocks[file_name]
     
-    logger.info(stock_download_list)
+    logger.info(f'Fetching data for {len(stock_download_list)} symbols')
     stocks = []
     count = 1
     for stock in stock_download_list:
         history = get_historical_data(STK=stock,session=session)
         current = get_current_data(STK=stock,session=session)
-        change  = get_dma_change(history_data=history,current_data=current)
+        open_current_change  = get_open_current_change(current_data=current)
         current_stock_price = get_round(get_data_from_dict(current,'current_stock_price'))
         units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
         stocks.append({
                     'RANK' : count,
                     'SYMBOL': stock , 
-                    'HISTORY' : get_historical_data(STK=stock,session=session),
-                    'CURRENT' : get_current_data(STK=stock,session=session),
-                    'CHANGE' : get_round(change),
+                    'HISTORY' : history,
+                    'CURRENT' : current,
+                    'CHANGE' : get_round(open_current_change),
                     'PRICE' : current_stock_price,
                     'UNITS' : units
                     })

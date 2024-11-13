@@ -41,37 +41,44 @@ def get_historical_data(STK:str,
             'volume_365':average_volume_365,
             } 
 
-def get_current_data(STK:str,
-                     session=None):
+def get_current_data(STK:str,session=None):
+        ticker = get_ticker_price_server(STK=STK)
         return  {
-                'current_stock_price' : get_round(get_price_server_stock_price(STK,Stock_Type.ETF))
+                'current_stock_price' : get_round(get_price_server_stock_current_price(ticker,Stock_Type.ETF)),
+                'open' : get_round(get_price_server_stock_open_price(ticker,Stock_Type.ETF))
         }
-        
+
 def get_dma_change(history_data:dict,current_data:dict):
         average_price = get_round(get_data_from_dict(history_data,'dma_30'))
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
         return get_change_percentage(average_price,current_stock_price)
 
-def get_history_context(STK:str,
-                        session=None):
+def get_open_current_change(current_data:dict):
+        open_price = get_data_from_dict(current_data,'open')
+        current_stock_price = get_data_from_dict(current_data,'current_stock_price')
+        return get_change_percentage(open_price,current_stock_price)
+
+def get_history_context(STK:str,session=None):
     history_data = get_historical_data(STK,session=session)
     current_data = get_current_data(STK,session=session)
     
     history_data_df : DataFrame = get_data_from_dict(history_data,'df')
     history_data_html = history_data_df[::-1].to_html().replace('dataframe','table') # table-fixed
     current_stock_price = get_data_from_dict(current_data,'current_stock_price')
+    open_stock_price = get_data_from_dict(current_data,'open')
     
-    change = get_dma_change(history_data,current_data)
+    open_current_change = get_open_current_change(current_data)
 
     return {
             'title':f'Stock History : {STK}',
             'stock_id':STK,
+            'open': f'{open_stock_price}',
             'cmp': f'{current_stock_price}',
             'timeline':f'{get_data_from_dict(history_data,'start_date')} to {get_data_from_dict(history_data,'end_date')}',
             'dma_30':get_round(get_data_from_dict(history_data,'dma_30')),
             'dma_90':get_round(get_data_from_dict(history_data,'dma_90')),
             'dma_365':get_round(get_data_from_dict(history_data,'dma_365')),
-            'change':f'{change}',
+            'change':f'{open_current_change}',
             'volume_30':get_format(get_round(get_data_from_dict(history_data,'volume_30'))),
             'volume_90':get_format(get_round(get_data_from_dict(history_data,'volume_90'))),
             'volume_365':get_format(get_round(get_data_from_dict(history_data,'volume_365'))),
