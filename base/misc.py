@@ -47,6 +47,18 @@ def get_format(data):
 def get_percentage_format(data:float):
     return "{:.0%}".format(float(data))
 
+def dt_from_epoch_ns(data:float)->datetime:
+    try:
+        return datetime.fromtimestamp(data/1000000000)
+    finally:
+        return datetime.now()
+
+def first_chars(data:str,separator:str='_',glue:str='')->str:
+    return glue.join( [x[0] for x in data.split(separator)] )
+    
+def first_chars_list(data:str,separator:str=';',glue:str=',')->str:
+    return glue.join([first_chars(x) for x in data.split(separator)])
+
 def timeit(func):
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
@@ -59,4 +71,6 @@ def timeit(func):
         
         return result
     return timeit_wrapper
+
+
     

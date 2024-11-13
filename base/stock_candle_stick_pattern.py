@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from base.stock_enum import *
 
 def candle_score(lst_0,lst_1,lst_2):    
     
@@ -41,57 +42,66 @@ def candle_score(lst_0,lst_1,lst_2):
 
     Hanging_Man_bearish=(C_1 > O_1) & (C_0>((O_1 + C_1)/2)) & (C_0 < O_1) & hammer
 
-    strCandle=''
+    strCandle=[]
     candle_score=0
     
     if doji:
-        strCandle='doji'
+        strCandle.append(Candle_Pattern.Doji)
     if evening_star:
-        strCandle=strCandle+'/ '+'evening_star'
+        strCandle.append(Candle_Pattern.Evening_Star)
         candle_score=candle_score-1
     if morning_star:
-        strCandle=strCandle+'/ '+'morning_star'
+        strCandle.append(Candle_Pattern.Morning_Star)
         candle_score=candle_score+1
     if shooting_Star_bearish:
-        strCandle=strCandle+'/ '+'shooting_Star_bearish'
+        strCandle.append(Candle_Pattern.Shooting_Star_Bearish)
         candle_score=candle_score-1
     if shooting_Star_bullish:
-        strCandle=strCandle+'/ '+'shooting_Star_bullish'
+        strCandle.append(Candle_Pattern.Shooting_Star_Bullish)
         candle_score=candle_score-1
     if    hammer:
-        strCandle=strCandle+'/ '+'hammer'
+        strCandle.append(Candle_Pattern.Hammer)
     if    inverted_hammer:
-        strCandle=strCandle+'/ '+'inverted_hammer'
+        strCandle.append(Candle_Pattern.Inverted_Hammer)
     if    bearish_harami:
-        strCandle=strCandle+'/ '+'bearish_harami'
+        strCandle.append(Candle_Pattern.Bearish_Harami)
         candle_score=candle_score-1
     if    Bullish_Harami:
-        strCandle=strCandle+'/ '+'Bullish_Harami'
+        strCandle.append(Candle_Pattern.Bullish_Harami)
         candle_score=candle_score+1
     if    Bearish_Engulfing:
-        strCandle=strCandle+'/ '+'Bearish_Engulfing'
+        strCandle.append(Candle_Pattern.Bearish_Engulfing)
         candle_score=candle_score-1
     if    bullish_reversal:
-        strCandle=strCandle+'/ '+'Bullish_Engulfing'
+        strCandle.append(Candle_Pattern.Bullish_Engulfing)
         candle_score=candle_score+1
     if    bullish_reversal:
-        strCandle=strCandle+'/ '+'bullish_reversal'
+        strCandle.append(Candle_Pattern.Bullish_Reversal)
         candle_score=candle_score+1
     if    bearish_reversal:
-        strCandle=strCandle+'/ '+'bearish_reversal'
+        strCandle.append(Candle_Pattern.Bearish_Reversal)
         candle_score=candle_score-1
     if    Piercing_Line_bullish:
-        strCandle=strCandle+'/ '+'Piercing_Line_bullish'
+        strCandle.append(Candle_Pattern.Piercing_Line_Bullish)
         candle_score=candle_score+1
     if    Hanging_Man_bearish:
-        strCandle=strCandle+'/ '+'Hanging_Man_bearish'
+        strCandle.append(Candle_Pattern.Hanging_Man_Bearish)
         candle_score=candle_score-1
     if    Hanging_Man_bullish:
-        strCandle=strCandle+'/ '+'Hanging_Man_bullish'
+        strCandle.append(Candle_Pattern.Hanging_Man_Bullish)
         candle_score=candle_score+1
         
     #return candle_score
     return candle_score,strCandle
+
+def support_resistance(data, window=20):
+    low_marker = 'low' if 'low' in data else 'Low'
+    high_marker = 'high' if 'high' in data else 'High'
+
+    support = data[low_marker].rolling(window=window).min()
+    resistance = data[high_marker].rolling(window=window).max()
+
+    return support, resistance
 
 def candle_df(df):
     #df_candle=first_letter_upper(df)
@@ -106,9 +116,16 @@ def candle_df(df):
         lst_0=[df_candle['Open'].iloc[c],df_candle['High'].iloc[c],df_candle['Low'].iloc[c],df_candle['Close'].iloc[c]]
         cscore,cpattern=candle_score(lst_0,lst_1,lst_2)    
         df_candle['CandleScore'].iat[c]=cscore
-        df_candle['CandlePattern'].iat[c]=cpattern
+        df_candle['CandlePattern'].iat[c]='; '.join([f'{cp.name}' for cp in cpattern])
     
     df_candle['CandleCumSum']=df_candle['CandleScore'].rolling(3).sum()
     
-    return df_candle
+    df_candle['Support'],df_candle['Resistance'] = support_resistance(data=df_candle,window=7)
+    df_candle['Support_1'],df_candle['Resistance_1'] = support_resistance(data=df_candle,window=1)
+    df_candle['Support_20'],df_candle['Resistance_20'] = support_resistance(data=df_candle,window=20)
+    df_candle['Support_60'],df_candle['Resistance_60'] = support_resistance(data=df_candle,window=60)
+
+    return {
+        'candle_df':df_candle,
+    }
 

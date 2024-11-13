@@ -10,23 +10,23 @@
     {% include 'top_navbar.html' %}
     
     <div style="margin: 2%;">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-fixed">
             <thead>
                 <tr>
                     <th>DMA</th>
                     <th>CMP</th>
                     <th>%CHANGE</th>
-
+                    
                     <th>DMA 30</th>
-                    <th>VOLUME 30</th>
+                    <th>VOL 30</th>
 
                     <th>DMA 90</th>
-                    <th>VOLUME 90</th>
+                    <th>VOL 90</th>
 
                     <th>DMA 365</th>
-                    <th>VOLUME 365</th>
+                    <th>VOL 365</th>
                     
-                    <th>Timeline</th>
+                    <th>PERIOD</th>
                 </tr>
             </thead>
             
@@ -45,14 +45,14 @@
                     <td>{{dma_365}}</td>
                     <td>{{volume_365}}</td>
 
-                    <td>{{timeline}}</td>
+                    <td class="word-wrap-normal">{{timeline}}</td>
                 </tr>
             </tbody>
             
           </table>
     </div>
 
-    <div style="margin: 2%;height: 75%;">
+    <div style="margin: 2%;height: 100%;">
         {{chart|safe}}
     </div>
 
