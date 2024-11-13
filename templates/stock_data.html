@@ -8,6 +8,13 @@
     </head>
     <body>
         {% include 'top_navbar.html' %}
+
+        <div>
+            <div style="margin: 2%;">
+                <a class="display-6 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="{{simple_url}}">Simple Chart</a>
+                <a class="display-6 link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="{{detailed_url}}" style="margin-left: 2%;">Detailed Chart</a>
+            </div>
+        </div>
         
         <div style="margin: 2%;">
             <table class="table table-bordered table-fixed">
@@ -56,9 +63,21 @@
             {{chart|safe}}
         </div>
 
-        <div style="margin: 2%;">
-            {{history|safe}}
-        </div>
+        {% if simple == false %}
+            <h5 class="display-6" style="margin-left: 2%;">Stock Details</h5>
+            {% with data=current_data %}
+                {% include 'key_value.html' %}
+            {% endwith %}
+            
+
+            <h5 class="display-6" style="margin-left: 2%;">Historical Data Analysis</h5>
+            <div style="margin: 2%;">
+                {{history|safe}}
+            </div>
+        {% endif %}
+
+        {% include 'bottom_bar.html' %}
+
     </body>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

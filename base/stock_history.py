@@ -27,8 +27,8 @@ def get_historical_data(STK:str,
     #average_price_365 = average([stk_historical_df['Open'].mean() , stk_historical_df['Close'].mean()])
 
     average_price_30 = stk_historical_df['Close'].tail(20).mean()
-    average_price_90 = stk_historical_df['Close'].tail(20).mean()
-    average_price_365 = stk_historical_df['Close'].tail(20).mean()
+    average_price_90 = stk_historical_df['Close'].tail(90).mean()
+    average_price_365 = stk_historical_df['Close'].mean()
 
     average_volume_30 = stk_historical_df['Volume'].tail(20).mean()
     average_volume_90 = stk_historical_df['Volume'].tail(60).mean()
@@ -49,7 +49,8 @@ def get_current_data(STK:str,session=None):
         ticker = get_ticker_price_server(STK=STK)
         return  {
                 'current_stock_price' : get_round(get_price_server_stock_current_price(ticker,Stock_Type.ETF)),
-                'previous_close' : get_round(get_price_server_stock_previous_close(ticker))
+                'previous_close' : get_round(get_price_server_stock_previous_close(ticker)),
+                'ticker' : ticker
         }
 
 def get_dma_change(history_data:dict,current_data:dict):
@@ -62,7 +63,7 @@ def get_open_current_change(current_data:dict):
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
         return get_change_percentage(previous_close_price,current_stock_price)
 
-def get_history_context(STK:str,session=None):
+def get_history_context(STK:str,session=None,simple=True):
     history_data = get_historical_data(STK,session=session)
     current_data = get_current_data(STK,session=session)
     
@@ -76,6 +77,7 @@ def get_history_context(STK:str,session=None):
     return {
             'title':f'Stock History : {STK}',
             'stock_id':STK,
+            'simple':simple,
             'previous_close': f'{previous_close_stock_price}',
             'cmp': f'{current_stock_price}',
             'timeline':f'{get_data_from_dict(history_data,'start_date')} to {get_data_from_dict(history_data,'end_date')}',
@@ -87,5 +89,6 @@ def get_history_context(STK:str,session=None):
             'volume_90':get_format(get_round(get_data_from_dict(history_data,'volume_90'))),
             'volume_365':get_format(get_round(get_data_from_dict(history_data,'volume_365'))),
             'history': history_data_html,
-            'chart':get_chart(history_data_df),
+            'chart':get_chart(history_data_df,simple_chart=simple),
+            'current_data':current_data['ticker']
             }

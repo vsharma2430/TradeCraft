@@ -72,7 +72,7 @@ def candle_score(lst_0,lst_1,lst_2):
     if    Bearish_Engulfing:
         strCandle.append(Candle_Pattern.Bearish_Engulfing)
         candle_score=candle_score-1
-    if    bullish_reversal:
+    if    Bullish_Engulfing:
         strCandle.append(Candle_Pattern.Bullish_Engulfing)
         candle_score=candle_score+1
     if    bullish_reversal:

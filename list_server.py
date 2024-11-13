@@ -80,8 +80,11 @@ async def root(request: Request):
     return {'message': 'history'}
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
-def stock_history(request: Request,stk_id:str):
-    context = get_history_context(STK=stk_id,session=session)
+def stock_history(request: Request,stk_id:str,chart:int=0):
+    context = get_history_context(STK=stk_id,session=session,simple= True if chart == 0 else False)
+    context['simple_url']=f'/etf/history/{stk_id}/'
+    context['detailed_url']=f'/etf/history/{stk_id}/?chart=1'
+    
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_data, 
