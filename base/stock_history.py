@@ -22,9 +22,13 @@ def get_historical_data(STK:str,
     candle_dict = candle_df(stk_historical_df)
     stk_historical_df = candle_dict['candle_df']
     
-    average_price_30 = average([stk_historical_df['Open'].tail(20).mean() , stk_historical_df['Close'].tail(20).mean()])
-    average_price_90 = average([stk_historical_df['Open'].tail(60).mean() , stk_historical_df['Close'].tail(60).mean()])
-    average_price_365 = average([stk_historical_df['Open'].mean() , stk_historical_df['Close'].mean()])
+    #average_price_30 = average([stk_historical_df['Open'].tail(20).mean() , stk_historical_df['Close'].tail(20).mean()])
+    #average_price_90 = average([stk_historical_df['Open'].tail(60).mean() , stk_historical_df['Close'].tail(60).mean()])
+    #average_price_365 = average([stk_historical_df['Open'].mean() , stk_historical_df['Close'].mean()])
+
+    average_price_30 = stk_historical_df['Close'].tail(20).mean()
+    average_price_90 = stk_historical_df['Close'].tail(20).mean()
+    average_price_365 = stk_historical_df['Close'].tail(20).mean()
 
     average_volume_30 = stk_historical_df['Volume'].tail(20).mean()
     average_volume_90 = stk_historical_df['Volume'].tail(60).mean()
@@ -45,7 +49,7 @@ def get_current_data(STK:str,session=None):
         ticker = get_ticker_price_server(STK=STK)
         return  {
                 'current_stock_price' : get_round(get_price_server_stock_current_price(ticker,Stock_Type.ETF)),
-                'open' : get_round(get_price_server_stock_open_price(ticker,Stock_Type.ETF))
+                'previous_close' : get_round(get_price_server_stock_previous_close(ticker))
         }
 
 def get_dma_change(history_data:dict,current_data:dict):
@@ -54,9 +58,9 @@ def get_dma_change(history_data:dict,current_data:dict):
         return get_change_percentage(average_price,current_stock_price)
 
 def get_open_current_change(current_data:dict):
-        open_price = get_data_from_dict(current_data,'open')
+        previous_close_price = get_data_from_dict(current_data,'previous_close')
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
-        return get_change_percentage(open_price,current_stock_price)
+        return get_change_percentage(previous_close_price,current_stock_price)
 
 def get_history_context(STK:str,session=None):
     history_data = get_historical_data(STK,session=session)
@@ -65,14 +69,14 @@ def get_history_context(STK:str,session=None):
     history_data_df : DataFrame = get_data_from_dict(history_data,'df')
     history_data_html = history_data_df[::-1].to_html().replace('dataframe','table') # table-fixed
     current_stock_price = get_data_from_dict(current_data,'current_stock_price')
-    open_stock_price = get_data_from_dict(current_data,'open')
+    previous_close_stock_price = get_data_from_dict(current_data,'previous_close')
     
     open_current_change = get_open_current_change(current_data)
 
     return {
             'title':f'Stock History : {STK}',
             'stock_id':STK,
-            'open': f'{open_stock_price}',
+            'previous_close': f'{previous_close_stock_price}',
             'cmp': f'{current_stock_price}',
             'timeline':f'{get_data_from_dict(history_data,'start_date')} to {get_data_from_dict(history_data,'end_date')}',
             'dma_30':get_round(get_data_from_dict(history_data,'dma_30')),

@@ -26,6 +26,7 @@ def get_chart(df:DataFrame):
 
     fig.add_trace(go.Scatter(x=dates,y=df['Support'] , mode='lines' , name='Support', showlegend=True), row=1, col=1)
     fig.add_trace(go.Scatter(x=dates,y=df['Resistance'], mode='lines' , name='Resistance', showlegend=True), row=1, col=1)
+    fig.add_trace(go.Scatter(x=dates,y=df['DMA'], mode='lines' , name='DMA', showlegend=True), row=1, col=1)
     #fig.add_trace(go.Scatter(x=dates,y=df["Close"]*0.9, mode='markers' , name=df['CandlePattern'], showlegend=True), row=1, col=1)
 
     fig.add_trace(go.Bar(x=dates,y=df['Volume'],name='Volume', showlegend=True), row=2, col=1)

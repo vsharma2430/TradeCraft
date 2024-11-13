@@ -26,22 +26,9 @@ def get_price_server_stock_current_price(stock_ticker,stock_type:Stock_Type=None
             elif('previousClose' in  stock_ticker):
                 return float(get_data_from_dict(stock_ticker,'previousClose'))
 
-def get_price_server_stock_open_price(stock_ticker,stock_type:Stock_Type=None)->float:
+def get_price_server_stock_previous_close(stock_ticker)->float:
     if(stock_ticker!=None):
-        if(stock_type == None):
-            stock_type = get_stocktype_from_ticker(stock_ticker)
-
-        if(stock_type == Stock_Type.EQUITY):
-            if('open' in stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'open'))
-            elif('previousClose' in  stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'previousClose'))
-        
-        elif(stock_type == Stock_Type.ETF):
-            if('open' in stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'open'))
-            elif('previousClose' in  stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'previousClose'))
+        return float(get_data_from_dict(stock_ticker,'previousClose'))
 
 def get_stock_price(STK:str,stock_type:Stock_Type=None,session=None)->float:
     stock_ticker = get_ticker_info(STK=STK,session=session)
