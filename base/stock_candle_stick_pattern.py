@@ -120,6 +120,9 @@ def candle_df(df,dma_window:int=7,support_window:int=7):
     
     df_candle['CandleCumSum']=df_candle['CandleScore'].rolling(3).sum()
     df_candle['DMA']=df_candle['Close'].rolling(window=dma_window).mean()
+    df_candle['DMA_1']=df_candle['Close'].rolling(window=1).mean()
+    df_candle['DMA_20']=df_candle['Close'].rolling(window=20).mean()
+    df_candle['DMA_60']=df_candle['Close'].rolling(window=60).mean()
     
     df_candle['Support'],df_candle['Resistance'] = support_resistance(data=df_candle,window=support_window)
     df_candle['Support_1'],df_candle['Resistance_1'] = support_resistance(data=df_candle,window=1)

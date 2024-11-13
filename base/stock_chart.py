@@ -24,7 +24,7 @@ def get_chart(df:DataFrame):
     candle_dates = np.array(df['CandlePattern'].to_numpy().nonzero()).tolist()[0]
     
 
-    fig.add_trace(go.Scatter(x=dates,y=df['Support'] , mode='lines' , name='Support', showlegend=True), row=1, col=1)
+    fig.add_trace(go.Scatter(x=dates,y=df['Support'] , mode='lines' , name='Support', showlegend=True), row=1, col=1)   
     fig.add_trace(go.Scatter(x=dates,y=df['Resistance'], mode='lines' , name='Resistance', showlegend=True), row=1, col=1)
     fig.add_trace(go.Scatter(x=dates,y=df['DMA'], mode='lines' , name='DMA', showlegend=True), row=1, col=1)
     #fig.add_trace(go.Scatter(x=dates,y=df["Close"]*0.9, mode='markers' , name=df['CandlePattern'], showlegend=True), row=1, col=1)
@@ -33,12 +33,13 @@ def get_chart(df:DataFrame):
 
     scatter_no = 5
     scatter_wid = row_width[0]/(scatter_no+1)
+    colors = ['#636EFA', '#EF553B', '#00CC96', '#AB63FA', '#FFA15A', '#19D3F3', '#FF6692', '#B6E880', '#FF97FF', '#FECB52']
     fig.update_layout(
         shapes = [
-            dict(x0=dates[x], x1=dates[x], y0=0, y1=1, xref='x', yref='paper',line_width=1) for x in candle_dates
+            dict(x0=dates[x], x1=dates[x], y0=0, y1=1, xref='x', yref='paper',line_width=1,line_color=colors[index%len(colors)]) for index,x in enumerate(candle_dates)
             ],
         annotations = [
-            dict(x=dates[x], y=(scatter_wid*(index%scatter_no)), xref='x', yref='paper',showarrow=False, xanchor='left', 
+            dict(x=dates[x], y=(scatter_wid*(index%scatter_no)), xref='x', yref='paper',showarrow=False, xanchor='left',bgcolor=colors[index%len(colors)],
                 text= f'{first_chars_list(df.iloc[x]['CandlePattern'])} ({df.iloc[x]['CandleScore']},{df.iloc[x]['CandleCumSum']})') for index,x in enumerate(candle_dates)
             ]
     )
