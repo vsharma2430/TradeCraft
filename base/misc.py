@@ -3,6 +3,7 @@ from datetime import datetime
 from functools import wraps
 import time
 from logging import getLogger
+import csv
 
 logger = getLogger('uvicorn.error')
 
@@ -25,12 +26,12 @@ def get_date(text:str):
     return text
 
 def get_change(initial:float,final:float)->float:
-    if(initial!=None or final != None or initial!=0):
+    if(initial!=None and final != None and initial!=0):
         return (final - initial) / initial
     return 0
 
 def get_change_percentage(initial:float,final:float,n_digits:int=2)->float:
-    if(initial!=None or final != None or initial!=0):
+    if(initial!=None and final != None and initial!=0):
         return round((final - initial) / initial * 100,2)
     return 0
 
@@ -71,6 +72,12 @@ def timeit(func):
         
         return result
     return timeit_wrapper
+
+def read_csv(file_loc):
+    with open(file_loc, mode ='r') as file:    
+       csv_file = csv.DictReader(file)
+       data = [row for row in csv_file]
+       return data
 
 
     

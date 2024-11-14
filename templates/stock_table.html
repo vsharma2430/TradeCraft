@@ -12,24 +12,35 @@
     </thead>
 
     <tbody>
-
         {% for item in list.table %}
             <tr>
-                <th scope="row">{{item.rank}}</th>
-                <td>
-                    <a class="link-offset-2 link-underline link-underline-opacity-0" href="{{ item.href }}">
-                    {{ item.caption }} 
-                    </a>
+                {% if item.rank %}
+                    <th scope="row">{{item.rank}}</th>
+                {% endif %}
 
-                    <sup>
-                        <a class="link-offset-2 link-underline link-underline-opacity-0" href="{{ item.href }}?chart=1">
-                            Details
+                <td>
+                    {% if item.href %}
+                        <a class="link-offset-2 link-underline link-underline-opacity-0" 
+                            href="{{item.href}}">
+
+                        {% if item.caption %}
+                            {{ item.caption }} 
+                        {% endif %}
                         </a>
-                    </sup>
+                    {% endif %}
+                    
+                    {% if item.desc %}
+                        <sub>
+                            {{item.desc}}
+                        </sub>
+                    {% endif %}
                 </td>
-                <td>{{item.change}}</td>
-                <td>{{item.price}}</td>
-                <td>{{item.units}}</td>
+
+                {% if item.change %}
+                    <td>{{item.change}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.units}}</td>
+                {% endif %}
             </tr>
         {% endfor %}
 

@@ -1,0 +1,13 @@
+<div class="d-inline-flex p-2" style="height: 100px;">
+    <h1 class="display-6">
+        {{property}}
+    </h1>
+
+    <div class="d-flex flex-column" style="margin-left: 1%;">
+        {% for item in property_table %}
+            <div>
+                <a class="link-underline link-underline-opacity-0 link-underline-opacity-50-hover" href="{{property_url}}">{{property_type}}</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>

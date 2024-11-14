@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse,JSONResponse
+from fastapi.responses import HTMLResponse,JSONResponse,FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI
@@ -12,6 +12,7 @@ from base.stock_history import *
 from base.stock_price import *
 from base.misc import *
 from invest.base import *
+from invest.portfolio import *
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
@@ -27,6 +28,12 @@ session = CachedLimiterSession(
     bucket_class=MemoryQueueBucket,
     backend=SQLiteCache(r"cache\yfinance.cache"),
 )
+
+#favicon
+favicon_path = f'static/images/favicon.ico'
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse(favicon_path)
 
 # root
 
@@ -61,8 +68,9 @@ async def root(request: Request):
 
 @app.get('/etf/list/{list_id}')
 async def root(request: Request,list_id:str):
-    stock_list_object = get_stock_list_data(session=session,file_name=list_id)
-    context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object)
+    portfolio_object = get_portfolio_stocks()
+    stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,session=session,list_name=list_id)
+    context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
     
     if(context['status'] == 'success'):
         return templates.TemplateResponse(

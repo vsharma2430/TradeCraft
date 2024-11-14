@@ -45,7 +45,7 @@ def get_historical_data(STK:str,
             'volume_365':average_volume_365,
             } 
 
-def get_current_data(STK:str,session=None):
+def get_current_data(STK:str):
         ticker = get_ticker_price_server(STK=STK)
         return  {
                 'current_stock_price' : get_round(get_price_server_stock_current_price(ticker,Stock_Type.ETF)),
@@ -63,9 +63,9 @@ def get_open_current_change(current_data:dict):
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
         return get_change_percentage(previous_close_price,current_stock_price)
 
-def get_history_context(STK:str,session=None,simple=True):
+def get_history_context(STK:str,session=None,simple=True,chart_type=0):
     history_data = get_historical_data(STK,session=session)
-    current_data = get_current_data(STK,session=session)
+    current_data = get_current_data(STK)
     
     history_data_df : DataFrame = get_data_from_dict(history_data,'df')
     history_data_html = history_data_df[::-1].to_html().replace('dataframe','table') # table-fixed
@@ -78,6 +78,7 @@ def get_history_context(STK:str,session=None,simple=True):
             'title':f'Stock History : {STK}',
             'stock_id':STK,
             'simple':simple,
+            'chart_type':chart_type,
             'previous_close': f'{previous_close_stock_price}',
             'cmp': f'{current_stock_price}',
             'timeline':f'{get_data_from_dict(history_data,'start_date')} to {get_data_from_dict(history_data,'end_date')}',
