@@ -56,7 +56,6 @@ def stock_price(request: Request,stk_id:str):
 @app.get('/etf/list/')
 async def root(request: Request):
     files_object = get_file_stocks_object()
-    
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
@@ -85,7 +84,21 @@ async def root(request: Request,list_id:str):
 
 @app.get('/etf/history/')
 async def root(request: Request):
-    return {'message': 'history'}
+    files_object = get_file_stocks_object()
+    stocks = []
+    for file in files_object:
+        stocks.extend(files_object[file])
+
+    stocks = list(set(stocks))
+    stocks.sort()
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title':'ETFs',
+            'list':[{ 'caption': get_plain_stock(str(key)) , 'href' : f'/etf/history/{key}'} for key in stocks],
+            }
+    )
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
 def stock_history(request: Request,stk_id:str,chart:int=0):
