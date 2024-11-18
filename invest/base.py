@@ -56,6 +56,7 @@ def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:S
         stocks.append({
                     'RANK' : count,
                     'SYMBOL': stock , 
+                    'PLAIN_STK' : get_plain_stock(stock),
                     'HISTORY' : history,
                     'CURRENT' : current,
                     'CHANGE' : get_round(open_current_change),
@@ -64,15 +65,22 @@ def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:S
                     'DESC': get_data_from_dict(current['ticker'],'longName')
                     })
         count = count + 1
-            
+    
+    portfolio_stocks = set([get_plain_stock(x) for x in portfolio_object])
+    
     stocks.sort(key = lambda x:x['CHANGE'])
     stocks_buy = stocks
     stocks_sell = list(reversed(stocks))
-        
+    
+    stocks_buy_person = [x if x['PLAIN_STK'] not in portfolio_stocks else None for x in stocks]
+    stocks_sell_person = [x if x['PLAIN_STK'] in portfolio_stocks else None for x in stocks]
+    stocks_buy_person = clean_list(stocks_buy_person)
+    stocks_sell_person = clean_list(stocks_sell_person)
+
     stock_list_object = {'NAME' : list_name , 
                          'STOCKS' : stocks , 
-                         'STOCK_BUY' : stocks_buy[:buy_count] , 
-                         'STOCK_SELL' : stocks_sell[:sell_count]
+                         'STOCK_BUY' : stocks_buy_person[:buy_count] , 
+                         'STOCK_SELL' : stocks_sell_person[:sell_count]
                         }
     
     return { list_name:stock_list_object} 

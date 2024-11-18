@@ -78,6 +78,9 @@ def read_csv(file_loc):
        csv_file = csv.DictReader(file)
        data = [row for row in csv_file]
        return data
+   
+clean_list = lambda list_obj : [x for x in list_obj if x is not None]
+   
 
 
     
