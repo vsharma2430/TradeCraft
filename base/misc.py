@@ -46,7 +46,9 @@ def get_format(data):
     return 0
 
 def get_percentage_format(data:float):
-    return "{:.0%}".format(float(data))
+    if(data is not None):
+        return "{:.00%}".format(get_float(data))
+    return ''
 
 def dt_from_epoch_ns(data:float)->datetime:
     try:
@@ -79,6 +81,12 @@ def read_csv(file_loc):
        data = [row for row in csv_file]
        return data
    
+def get_float(data:str):
+    try:
+        return float(data.strip())
+    except:
+        return 0
+
 clean_list = lambda list_obj : [x for x in list_obj if x is not None]
    
 

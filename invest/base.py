@@ -47,33 +47,42 @@ def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:S
     logger.info(f'Fetching data for {len(stock_download_list)} symbols')
     stocks = []
     count = 1
+    
+    portfolio_stocks = set([get_plain_stock(x) for x in portfolio_object])
+    
     for stock in stock_download_list:
+        plain_stock_sym = get_plain_stock(stock)
         history = get_historical_data(STK=stock,session=session)
         current = get_current_data(STK=stock,stock_type=stock_type)
         open_current_change  = get_open_current_change(current_data=current)
         current_stock_price = get_round(get_data_from_dict(current,'current_stock_price'))
         units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
+        portfolio_stk_object = get_data_from_dict(portfolio_object,plain_stock_sym)
+        portfolio_price = get_float(get_data_from_dict(portfolio_stk_object,'PRICE'))
+        portfolio_change = get_change(portfolio_price,current_stock_price)
+        if(portfolio_stk_object is not None):
+            portfolio_stk_object['PL'] = portfolio_change
+        
         stocks.append({
                     'RANK' : count,
                     'SYMBOL': stock , 
-                    'PLAIN_STK' : get_plain_stock(stock),
+                    'PLAIN_STK' : plain_stock_sym,
                     'HISTORY' : history,
                     'CURRENT' : current,
                     'CHANGE' : get_round(open_current_change),
                     'PRICE' : current_stock_price,
                     'UNITS' : units,
-                    'DESC': get_data_from_dict(current['ticker'],'longName')
+                    'DESC': get_data_from_dict(current['ticker'],'longName'),
+                    'PL' : portfolio_change
                     })
         count = count + 1
-    
-    portfolio_stocks = set([get_plain_stock(x) for x in portfolio_object])
     
     stocks.sort(key = lambda x:x['CHANGE'])
     stocks_buy = stocks
     stocks_sell = list(reversed(stocks))
     
-    stocks_buy_person = [x if x['PLAIN_STK'] not in portfolio_stocks else None for x in stocks]
-    stocks_sell_person = [x if x['PLAIN_STK'] in portfolio_stocks else None for x in stocks]
+    stocks_buy_person = [x if x['PLAIN_STK'] not in portfolio_stocks else None for x in stocks_buy]
+    stocks_sell_person = [x if (x['PLAIN_STK'] in portfolio_stocks and x['PL']>=sell_target) else None for x in stocks_sell]
     stocks_buy_person = clean_list(stocks_buy_person)
     stocks_sell_person = clean_list(stocks_sell_person)
 
@@ -104,6 +113,7 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
     get_portfolio_key :dict = lambda index,portfolio : {
                                                         'caption': get_data_from_dict(portfolio,'SYMBOL'),
                                                         'rank': (index+1),
+                                                        'change': get_percentage_format(get_data_from_dict(portfolio,'PL')), 
                                                         'href' : f'/etf/history/{get_data_from_dict(portfolio,'SYMBOL')}/'} 
     
     get_portfolio : list = lambda portfolio : [get_portfolio_key(index,portfolio[symbol]) for index,symbol in enumerate(portfolio)]

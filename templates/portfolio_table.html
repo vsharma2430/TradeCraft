@@ -1,0 +1,46 @@
+<table class="table caption-top">
+    <caption class="display-6">{{list.table_head}}</caption>
+
+    <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Stock</th>
+          <th scope="col">P/L</th>
+          <th scope="col">Price</th>
+          <th scope="col">Units</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in list.table %}
+            <tr>
+                {% if item.rank %}
+                    <th scope="row">{{item.rank}}</th>
+                {% endif %}
+
+                <td>
+                    {% if item.href %}
+                        <a class="link-offset-2 link-underline link-underline-opacity-0" href="{{item.href}}">
+
+                        {% if item.caption %}
+                            {{ item.caption }} 
+                        {% endif %}
+                        </a>
+                    {% endif %}
+                    
+                    {% if item.desc %}
+                        <sub>
+                            {{item.desc}}
+                        </sub>
+                    {% endif %}
+                </td>
+
+                {% if item.change %}
+                    <td>{{item.change}}</td>
+                {% endif %}
+
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
