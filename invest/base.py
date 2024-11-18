@@ -6,30 +6,40 @@ from base.stock_history import *
 from base.misc import *
 from invest.investment_target import *
 
-stock_csv_folder = r'invest\stock_list'
+etf_csv_folder = r'invest\stock_list\ETF'
+stock_csv_folder = r'invest\stock_list\stock'
 
-def get_file_stocks_object(folder_location = stock_csv_folder):
+def get_file_stocks_object(folder_location:str):
     array_files = listdir(folder_location)
     
     list_name : str
     file_stocks = {}
-    
+    stock_header = ''
+
     for list_name in array_files:
-        file_path= join(stock_csv_folder,list_name)
+        file_path= join(folder_location,list_name)
         id = Path(file_path).stem.upper()
         
+        data = read_csv(file_path)
         with open(file_path) as f:
-            stock_syms = [convert_gfinToyfin(stock.strip()) for stock in f.readlines()]
-        
-        file_stocks[id] = stock_syms
+            if(len(data)>0):
+                if('SYMBOL' in data[0]):
+                    stock_header = 'SYMBOL'
+                elif('Symbol' in data[0]):
+                    stock_header = 'Symbol'
+                elif('SYM' in data[0]):
+                    stock_header = 'SYM'
+
+                stock_syms = [get_yfin_symbol(dataX[stock_header]) for dataX in data]
+                file_stocks[id] = stock_syms
 
     return file_stocks
 
 @timeit
-def get_stock_list_object(portfolio_object:dict,session=None,list_name=None,buy_count:int=10,sell_count:int=10):
+def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:Stock_Type,session=None,list_name=None,buy_count:int=10,sell_count:int=10):
     stock_list_object = {}
     stock_download_list:list = []
-    file_stocks = get_file_stocks_object()
+    file_stocks = get_file_stocks_object(folder_location=folder_location)
     
     if(list_name != None and list_name in file_stocks):
         stock_download_list = file_stocks[list_name]
@@ -39,7 +49,7 @@ def get_stock_list_object(portfolio_object:dict,session=None,list_name=None,buy_
     count = 1
     for stock in stock_download_list:
         history = get_historical_data(STK=stock,session=session)
-        current = get_current_data(STK=stock)
+        current = get_current_data(STK=stock,stock_type=stock_type)
         open_current_change  = get_open_current_change(current_data=current)
         current_stock_price = get_round(get_data_from_dict(current,'current_stock_price'))
         units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
@@ -73,15 +83,22 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
     n_stocks_sell = len(stock_list_object[list_id]['STOCK_SELL'])
     n_stocks_total = len(stock_list_object[list_id]['STOCKS'])
 
-    get_key : dict = lambda key : {'rank':key['RANK'], 
-                            'caption': key['SYMBOL'], 
-                            'change' : key['CHANGE'] , 
-                            'price' : key['PRICE'] , 
-                            'units' : key['UNITS'] , 
-                            'desc':key['DESC'],
-                            'href' : f'/etf/history/{key['SYMBOL']}/'} 
+    get_stock_key : dict = lambda key : {'rank': get_data_from_dict(key,'RANK'), 
+                                        'caption': get_data_from_dict(key,'SYMBOL'),
+                                        'change' : get_data_from_dict(key,'CHANGE'), 
+                                        'price' : get_data_from_dict(key,'PRICE'),
+                                        'units' : get_data_from_dict(key,'UNITS'),
+                                        'desc': get_data_from_dict(key,'DESC'),
+                                        'href' : f'/etf/history/{get_data_from_dict(key,'SYMBOL'),}/'} 
     
-    get_table : list = lambda table_key,n_stocks : [ get_key(key) for key in stock_list_object[list_id][table_key][:n_stocks]]
+    get_table : list = lambda table_key,n_stocks : [ get_stock_key(key) for key in stock_list_object[list_id][table_key][:n_stocks]]
+
+    get_portfolio_key :dict = lambda index,portfolio : {
+                                                        'caption': get_data_from_dict(portfolio,'SYMBOL'),
+                                                        'rank': (index+1),
+                                                        'href' : f'/etf/history/{get_data_from_dict(portfolio,'SYMBOL'),}/'} 
+    
+    get_portfolio : list = lambda portfolio : [get_portfolio_key(index,portfolio[symbol]) for index,symbol in enumerate(portfolio)]
 
     return {
             'status':'success',
@@ -105,7 +122,7 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
             'portfolio':
             {
                 'table_head':'PORTFOLIO',
-                'table' : [{'caption':portfolio_object[symbol]['SYMBOL'],'rank':(index+1),'href' : f'/etf/history/{portfolio_object[symbol]['SYMBOL']}/'} for index,symbol in enumerate(portfolio_object)],    
+                'table' : get_portfolio(portfolio_object),    
             }
         }
     

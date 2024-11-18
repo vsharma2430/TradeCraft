@@ -37,38 +37,82 @@ async def favicon():
 
 # root
 
-@app.get('/')
-async def root():
-    return {'message': 'Welcome to PyETF server!'}
-
-@app.get('/etf/')
-async def root():
-    return {'message': 'etf main page'}
-
-#price
-
-@app.get('/etf/price/{stk_id}/',response_class=JSONResponse)
-def stock_price(request: Request,stk_id:str):
-    return {'price': get_stock_price(STK=stk_id,session=None)}
-
-# lists
-
-@app.get('/etf/list/')
+@app.get('/',response_class=HTMLResponse)
 async def root(request: Request):
-    files_object = get_file_stocks_object()
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
         context={
-            'title':'STOCK LISTS',
+            'title':'TRADE CRAFT - Home',
+            'list':[{ 'caption': 'ETF' , 'href' : f'/etf/'},
+                { 'caption': 'Stock' , 'href' : f'/stock/'}],
+            }
+    )
+
+@app.get('/etf/',response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title':'ETF',
+            'list':[{ 'caption': 'Lists' , 'href' : f'/etf/list/'},
+                    { 'caption': 'All Listed (NSE)' , 'href' : f'/etf/history/'},
+                    { 'caption': 'Portfolio' , 'href' : f'/etf/portfolio/'}],
+            }
+    )
+
+@app.get('/stock/')
+async def root(request: Request):
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title':'Stock',
+            'list':[
+                { 'caption': 'Lists' , 'href' : f'/stock/list/'},
+                { 'caption': 'All Listed (NSE)' , 'href' : f'/stock/history/'},
+                { 'caption': 'Portfolio' , 'href' : f'/stock/portfolio/'}],
+            }
+    )
+
+# ticker and price
+
+@app.get('/stock/{stk_id}/',response_class=JSONResponse)
+def stock_price(request: Request,stk_id:str):
+    return {'ticker': get_ticker_info(STK=stk_id,session=session)}
+
+@app.get('/stock/{stk_id}/{variable}',response_class=JSONResponse)
+def stock_price(request: Request,stk_id:str,variable:str):
+    ticker = get_ticker_info(STK=stk_id,session=session)
+    return {f'{variable}': get_data_from_dict(ticker,variable) }
+
+@app.get('/etf/{stk_id}/price',response_class=JSONResponse)
+def stock_price(request: Request,stk_id:str):
+    return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.ETF,session=session)}
+
+@app.get('/stock/{stk_id}/price',response_class=JSONResponse)
+def stock_price(request: Request,stk_id:str):
+    return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session)}
+
+# lists etf
+
+@app.get('/etf/list/',response_class=HTMLResponse)
+async def root(request: Request):
+    files_object = get_file_stocks_object(folder_location=etf_csv_folder)
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title':'ETF LISTS',
             'list':[{ 'caption':str(key) , 'href' : f'/etf/list/{key}'} for key in files_object],
             }
     )
 
-@app.get('/etf/list/{list_id}')
+@app.get('/etf/list/{list_id}',response_class=HTMLResponse)
 async def root(request: Request,list_id:str):
-    portfolio_object = get_portfolio_stocks()
-    stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,session=session,list_name=list_id)
+    portfolio_object = get_portfolio_stocks(csv_file=portfolio_etf)
+    stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_type=Stock_Type.ETF,folder_location=etf_csv_folder,session=session,list_name=list_id)
     context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
     
     if(context['status'] == 'success'):
@@ -80,11 +124,41 @@ async def root(request: Request,list_id:str):
     else:
         return JSONResponse(context)
 
-# history 
+# lists stock
 
-@app.get('/etf/history/')
+@app.get('/stock/list/',response_class=HTMLResponse)
 async def root(request: Request):
-    files_object = get_file_stocks_object()
+    files_object = get_file_stocks_object(folder_location=stock_csv_folder)
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title':'STOCK LISTS',
+            'list':[{ 'caption':str(key) , 'href' : f'/stock/list/{key}'} for key in files_object],
+            }
+    )
+
+@app.get('/stock/list/{list_id}',response_class=HTMLResponse)
+async def root(request: Request,list_id:str):
+    portfolio_object = get_portfolio_stocks(csv_file=portfolio_stock)
+    stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_type=Stock_Type.EQUITY,folder_location=stock_csv_folder,session=session,list_name=list_id)
+    context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
+    
+    if(context['status'] == 'success'):
+        return templates.TemplateResponse(
+            request=request, 
+            name=template_stock_list_stocks, 
+            context=context
+        )
+    else:
+        return JSONResponse(context)
+
+
+# history etf
+
+@app.get('/etf/history/',response_class=HTMLResponse)
+async def root(request: Request):
+    files_object = get_file_stocks_object(etf_csv_folder)
     stocks = []
     for file in files_object:
         stocks.extend(files_object[file])
@@ -102,7 +176,7 @@ async def root(request: Request):
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
 def stock_history(request: Request,stk_id:str,chart:int=0):
-    context = get_history_context(STK=stk_id,session=session,simple= True if chart == 0 else False)
+    context = get_history_context(STK=stk_id,stock_type=Stock_Type.ETF,session=session,simple= True if chart == 0 else False,chart_type=chart)
     context['simple_url']=f'/etf/history/{stk_id}/'
     context['detailed_url']=f'/etf/history/{stk_id}/?chart=1'
     
@@ -111,4 +185,38 @@ def stock_history(request: Request,stk_id:str,chart:int=0):
         name=template_stock_data, 
         context=context
     )
+
+# history stock
+
+@app.get('/stock/history/',response_class=HTMLResponse)
+async def root(request: Request):
+    files_object = get_file_stocks_object(stock_csv_folder)
+    stocks = []
+    for file in files_object:
+        stocks.extend(files_object[file])
+
+    stocks = list(set(stocks))
+    stocks.sort()
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_list, 
+        context={
+            'title':'Stocks',
+            'list':[{ 'caption': get_plain_stock(str(key)) , 'href' : f'/stock/history/{key}'} for key in stocks],
+            }
+    )
+
+@app.get('/stock/history/{stk_id}/',response_class=HTMLResponse)
+def stock_history(request: Request,stk_id:str,chart:int=0):
+    context = get_history_context(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session,simple= True if chart == 0 else False)
+    context['simple_url']=f'/stock/history/{stk_id}/'
+    context['detailed_url']=f'/stock/history/{stk_id}/?chart=1'
+    context['volume_url']=f'/stock/history/{stk_id}/?chart=2'
+    
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_stock_data, 
+        context=context
+    )
+
 

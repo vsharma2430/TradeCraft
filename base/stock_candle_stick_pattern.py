@@ -103,8 +103,7 @@ def support_resistance(data, window=20):
 
     return support, resistance
 
-def candle_df(df,dma_window:int=7,support_window:int=7):
-    #df_candle=first_letter_upper(df)
+def candle_df(df,dma_window:int=rolling_window,support_window:int=rolling_window):
     df_candle=df.copy()
     df_candle['CandleScore']=0
     df_candle['CandlePattern']=''
@@ -119,15 +118,14 @@ def candle_df(df,dma_window:int=7,support_window:int=7):
         df_candle['CandlePattern'].iat[c]='; '.join([f'{cp.name}' for cp in cpattern])
     
     df_candle['CandleCumSum']=df_candle['CandleScore'].rolling(3).sum()
-    df_candle['DMA']=df_candle['Close'].rolling(window=dma_window).mean()
-    df_candle['DMA_1']=df_candle['Close'].rolling(window=1).mean()
-    df_candle['DMA_20']=df_candle['Close'].rolling(window=20).mean()
-    df_candle['DMA_60']=df_candle['Close'].rolling(window=60).mean()
+
+    df_rolling = lambda df_head,rolling_window:df_candle[df_head].rolling(window=rolling_window).mean()
     
-    df_candle['Support'],df_candle['Resistance'] = support_resistance(data=df_candle,window=support_window)
-    df_candle['Support_1'],df_candle['Resistance_1'] = support_resistance(data=df_candle,window=1)
-    df_candle['Support_20'],df_candle['Resistance_20'] = support_resistance(data=df_candle,window=20)
-    df_candle['Support_60'],df_candle['Resistance_60'] = support_resistance(data=df_candle,window=60)
+    for dmaX in dma_window:
+        df_candle[f'DMA_{dmaX}']=df_rolling(df_head='Close',rolling_window=int(dmaX))
+
+    for supportX in support_window:
+        df_candle[f'Support_{supportX}'],df_candle[f'Resistance_{supportX}'] = support_resistance(data=df_candle,window=supportX)
 
     return {
         'candle_df':df_candle,

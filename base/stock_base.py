@@ -15,11 +15,14 @@ def get_ticker(STK:str, session=None)->yf.Ticker:
     
 def get_ticker_info_price_server(STK:str)->yf.Ticker:
     req = get(url=urljoin(price_server,STK))
-    if(req.status_code == 200):
+    if(req.status_code == 200 and 'ticker' in req.json()):
         return req.json()['ticker']
     else:
-        return None
+        ticker = get_ticker_info(STK=STK)
+        if (ticker!=None):
+            return None
 
+@timeit
 def get_ticker_info(STK:str, session=None):
     ticker:yf.Ticker = get_ticker(STK=STK,session=session)
     if(ticker!=None):

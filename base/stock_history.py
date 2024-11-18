@@ -45,10 +45,10 @@ def get_historical_data(STK:str,
             'volume_365':average_volume_365,
             } 
 
-def get_current_data(STK:str):
+def get_current_data(STK:str,stock_type:Stock_Type):
         ticker = get_ticker_price_server(STK=STK)
         return  {
-                'current_stock_price' : get_round(get_price_server_stock_current_price(ticker,Stock_Type.ETF)),
+                'current_stock_price' : get_round(get_price_server_stock_current_price(stock_ticker=ticker,stock_type=stock_type)),
                 'previous_close' : get_round(get_price_server_stock_previous_close(ticker)),
                 'ticker' : ticker
         }
@@ -63,9 +63,9 @@ def get_open_current_change(current_data:dict):
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
         return get_change_percentage(previous_close_price,current_stock_price)
 
-def get_history_context(STK:str,session=None,simple=True,chart_type=0):
-    history_data = get_historical_data(STK,session=session)
-    current_data = get_current_data(STK)
+def get_history_context(STK:str,stock_type:Stock_Type,session=None,simple=True,chart_type=0):
+    history_data = get_historical_data(STK=STK,session=session)
+    current_data = get_current_data(STK=STK,stock_type=stock_type)
     
     history_data_df : DataFrame = get_data_from_dict(history_data,'df')
     history_data_html = history_data_df[::-1].to_html().replace('dataframe','table') # table-fixed
@@ -90,6 +90,6 @@ def get_history_context(STK:str,session=None,simple=True,chart_type=0):
             'volume_90':get_format(get_round(get_data_from_dict(history_data,'volume_90'))),
             'volume_365':get_format(get_round(get_data_from_dict(history_data,'volume_365'))),
             'history': history_data_html,
-            'chart':get_chart(history_data_df,simple_chart=simple),
+            'chart':get_chart(history_data_df,simple_chart=simple) if (chart_type ==0 or chart_type ==1) else get_chart_with_volume(history_data_df),
             'current_data':current_data['ticker']
             }

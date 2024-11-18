@@ -35,3 +35,7 @@ class Candle_Pattern(Enum):
     Piercing_Line_Bullish = 13
     Hanging_Man_Bearish = 14
     Hanging_Man_Bullish = 15
+
+rolling_window:int=[5,10,20,50,100,200]
+trace_types = ['DMA','Support','Resistance']
+

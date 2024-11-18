@@ -30,6 +30,7 @@ def get_price_server_stock_previous_close(stock_ticker)->float:
     if(stock_ticker!=None):
         return float(get_data_from_dict(stock_ticker,'previousClose'))
 
+@timeit
 def get_stock_price(STK:str,stock_type:Stock_Type=None,session=None)->float:
     stock_ticker = get_ticker_info(STK=STK,session=session)
     
