@@ -57,9 +57,14 @@ def get_chart_with_volume(df:DataFrame):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     fig.add_trace(go.Candlestick(x=dates,
                     open=df['Open'], high=df['High'],
-                    low=df['Low'], close=df['Close']),
+                    low=df['Low'], close=df['Close'],name="OHLC"),
                     secondary_y=True)
-    fig.add_trace(go.Bar(x=dates,y=df['Volume'],marker_color='lightsalmon',opacity=0.5),
+    fig.add_trace(go.Bar(x=dates,y=df['Volume'],name='Volume',marker_color='lightsalmon',opacity=0.5),
                 secondary_y=False)
     fig.layout.yaxis2.showgrid=False
     return fig.to_html(full_html=False)
+
+def add_chart_context(context:dict,chart:int):
+    context['simple_url'],context['simple_selected']=f'0','selected' if chart == 0 else ''
+    context['detailed_url'],context['detailed_selected']=f'1','selected' if chart == 1 else ''
+    context['volume_url'],context['volume_selected']=f'2','selected' if chart == 2 else ''

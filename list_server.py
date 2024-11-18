@@ -26,7 +26,7 @@ class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
 session = CachedLimiterSession(
     limiter=Limiter(RequestRate(2, Duration.SECOND*5)),  # max 2 requests per 5 seconds
     bucket_class=MemoryQueueBucket,
-    backend=SQLiteCache(r"cache\yfinance.cache"),
+    backend=SQLiteCache(r'cache\yfinance.cache'),
 )
 
 #favicon
@@ -75,25 +75,6 @@ async def root(request: Request):
                 { 'caption': 'Portfolio' , 'href' : f'/stock/portfolio/'}],
             }
     )
-
-# ticker and price
-
-@app.get('/stock/{stk_id}/',response_class=JSONResponse)
-def stock_price(request: Request,stk_id:str):
-    return {'ticker': get_ticker_info(STK=stk_id,session=session)}
-
-@app.get('/stock/{stk_id}/{variable}',response_class=JSONResponse)
-def stock_price(request: Request,stk_id:str,variable:str):
-    ticker = get_ticker_info(STK=stk_id,session=session)
-    return {f'{variable}': get_data_from_dict(ticker,variable) }
-
-@app.get('/etf/{stk_id}/price',response_class=JSONResponse)
-def stock_price(request: Request,stk_id:str):
-    return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.ETF,session=session)}
-
-@app.get('/stock/{stk_id}/price',response_class=JSONResponse)
-def stock_price(request: Request,stk_id:str):
-    return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session)}
 
 # lists etf
 
@@ -175,10 +156,9 @@ async def root(request: Request):
     )
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
-def stock_history(request: Request,stk_id:str,chart:int=0):
+async def root(request: Request,stk_id:str,chart:int=0):
     context = get_history_context(STK=stk_id,stock_type=Stock_Type.ETF,session=session,simple= True if chart == 0 else False,chart_type=chart)
-    context['simple_url']=f'/etf/history/{stk_id}/'
-    context['detailed_url']=f'/etf/history/{stk_id}/?chart=1'
+    add_chart_context(context=context,chart=chart)
     
     return templates.TemplateResponse(
         request=request, 
@@ -207,11 +187,9 @@ async def root(request: Request):
     )
 
 @app.get('/stock/history/{stk_id}/',response_class=HTMLResponse)
-def stock_history(request: Request,stk_id:str,chart:int=0):
+async def root(request: Request,stk_id:str,chart:int=0):
     context = get_history_context(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session,simple= True if chart == 0 else False)
-    context['simple_url']=f'/stock/history/{stk_id}/'
-    context['detailed_url']=f'/stock/history/{stk_id}/?chart=1'
-    context['volume_url']=f'/stock/history/{stk_id}/?chart=2'
+    add_chart_context(context=context,chart=chart)
     
     return templates.TemplateResponse(
         request=request, 
@@ -220,3 +198,23 @@ def stock_history(request: Request,stk_id:str,chart:int=0):
     )
 
 
+# ticker and price query
+
+@app.get('/etf/ticker/{stk_id}/',response_class=JSONResponse)
+@app.get('/stock/ticker/{stk_id}/',response_class=JSONResponse)
+async def root(request: Request,stk_id:str):
+    return {'ticker': get_ticker_info(STK=stk_id,session=session)}
+
+@app.get('/etf/query/{stk_id}/{variable}',response_class=JSONResponse)
+@app.get('/stock/query/{stk_id}/{variable}',response_class=JSONResponse)
+async def root(request: Request,stk_id:str,variable:str):
+    ticker = get_ticker_info(STK=stk_id,session=session)
+    return {f'{variable}': get_data_from_dict(ticker,variable) }
+
+@app.get('/etf/query/{stk_id}/price',response_class=JSONResponse)
+async def root(request: Request,stk_id:str):
+    return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.ETF,session=session)}
+
+@app.get('/stock/query/{stk_id}/price',response_class=JSONResponse)
+async def root(request: Request,stk_id:str):
+    return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session)}
