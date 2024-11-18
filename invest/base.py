@@ -89,14 +89,14 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
                                         'price' : get_data_from_dict(key,'PRICE'),
                                         'units' : get_data_from_dict(key,'UNITS'),
                                         'desc': get_data_from_dict(key,'DESC'),
-                                        'href' : f'/etf/history/{get_data_from_dict(key,'SYMBOL'),}/'} 
+                                        'href' : f'/etf/history/{get_data_from_dict(key,'SYMBOL')}/'} 
     
     get_table : list = lambda table_key,n_stocks : [ get_stock_key(key) for key in stock_list_object[list_id][table_key][:n_stocks]]
 
     get_portfolio_key :dict = lambda index,portfolio : {
                                                         'caption': get_data_from_dict(portfolio,'SYMBOL'),
                                                         'rank': (index+1),
-                                                        'href' : f'/etf/history/{get_data_from_dict(portfolio,'SYMBOL'),}/'} 
+                                                        'href' : f'/etf/history/{get_data_from_dict(portfolio,'SYMBOL')}/'} 
     
     get_portfolio : list = lambda portfolio : [get_portfolio_key(index,portfolio[symbol]) for index,symbol in enumerate(portfolio)]
 

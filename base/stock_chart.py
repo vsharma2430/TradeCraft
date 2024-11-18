@@ -8,10 +8,11 @@ from base.misc import *
 from base.stock_base import trace_types,rolling_window
 import plotly.express as px
 
-colors = px.colors.qualitative.Pastel
+colors_pastel = px.colors.qualitative.Pastel
 
 def get_dates(df):
-    return [datetime.fromtimestamp(dd/1000000000) for dd in df.index.values.tolist()]
+    get_dt = lambda dd : datetime.fromtimestamp(dd/1000000000)
+    return [get_dt(dd) for dd in df.index.values.tolist()]
     
 def get_simple_chart(df:DataFrame):
     fig = df.plot(backend='plotly')
@@ -29,7 +30,17 @@ def get_chart(df:DataFrame,simple_chart=True,simple_window=100):
                     low=df["Low"], close=df["Close"], name="OHLC"), 
                     row=1, col=1)
     
-    candle_dates = np.array(df['CandlePattern'].to_numpy().nonzero()).tolist()[0]
+    df_candle_marker = DataFrame()
+    lowest_point = min(df['Open'].min(),df['Close'].min(),df['High'].min(),df['Low'].min())
+    defer_y_factor = 0.05
+    max_cs,min_cs = df['CandleCumSum'].max(),df['CandleCumSum'].min()
+    candle_date_indices = np.array(df['CandlePattern'].to_numpy().nonzero()).tolist()[0]
+    df_candle_marker['date'] = [dates[x].date() for x in candle_date_indices]
+    df_candle_marker['candle_score'] = [df.iloc[x]['CandleScore'] for x in candle_date_indices]
+    df_candle_marker['candle_cumsum_color'] = [colors_pastel[0] if df.iloc[x]['CandleCumSum'] > 0 else colors_pastel[1] for x in candle_date_indices]
+    df_candle_marker['candle_cumsum_abs'] = [abs(df.iloc[x]['CandleCumSum'])/defer_y_factor for x in candle_date_indices]
+    df_candle_marker['name'] = [f'{first_chars_list(df.iloc[x]['CandlePattern'])} ({df.iloc[x]['CandleScore']},{df.iloc[x]['CandleCumSum']})' for x in candle_date_indices]
+    df_candle_marker['y'] = [lowest_point*(1-(max_cs-min_cs)*defer_y_factor) + df.iloc[x]['CandleCumSum']*2*defer_y_factor  for x in candle_date_indices]
     
     getScatter = lambda column,name=None:go.Scatter(x=dates,y=df[column], mode='lines' , name=column if name == None else name, showlegend=True)
     addTrace = lambda trace,trace_name=None,row=1,col=1: fig.add_trace(getScatter(trace,trace_name), row=row, col=col)   
@@ -45,7 +56,13 @@ def get_chart(df:DataFrame,simple_chart=True,simple_window=100):
                 win_head = f'{x}_{y}'
                 if(win_head in df):
                     addTrace(win_head)
-
+                    
+    fig.add_trace(go.Scatter(x=df_candle_marker['date'],y=df_candle_marker['y'],
+                             text=df_candle_marker['name'], name='Candle Patterns',
+                             marker=dict(size=df_candle_marker['candle_cumsum_abs'],
+                             color=df_candle_marker['candle_cumsum_color']),
+                             mode= 'markers', showlegend=True), row=1, col=1)
+    
     fig.add_trace(go.Bar(x=dates,y=df['Volume'],name='Volume', showlegend=True), row=2, col=1)
     fig.update(layout_xaxis_rangeslider_visible=False)
     
