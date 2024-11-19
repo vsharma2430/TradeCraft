@@ -15,15 +15,27 @@ def get_data_from_dict(dictObj:dict,key:object):
 
 def average(range:list):
     return sum(range)/len(range)
+   
+def get_float(data):
+    try:
+        if(isinstance(data, (int, float))):
+            return data
+        return float(data.strip())
+    except:
+        return 0
 
 def get_date(text:str):
-    print(text)
     #2024-10-11 00:00:00+05:30
     match = re.search(r'\d{4}-\d{2}-\d{2}', text)
     if(match != None):
         date = datetime.strptime(match.group(), '%Y-%d-%m').date()
         return date.strftime('%d-%m-%Y')
     return text
+
+def get_datetime(text:str):
+    if(text!=None and text!=''):
+        return datetime.strptime(text,'%d-%m-%Y')
+    return datetime.now()
 
 def get_change(initial:float,final:float)->float:
     if(initial!=None and final != None and initial!=0):
@@ -47,13 +59,13 @@ def get_format(data):
 
 def get_percentage_format(data:float):
     if(data is not None):
-        return "{:.00%}".format(get_float(data))
+        return '{:.2%}'.format(get_float(data))
     return ''
 
 def dt_from_epoch_ns(data:float)->datetime:
     try:
         return datetime.fromtimestamp(data/1000000000)
-    finally:
+    except:
         return datetime.now()
 
 def first_chars(data:str,separator:str='_',glue:str='')->str:
@@ -80,12 +92,6 @@ def read_csv(file_loc):
        csv_file = csv.DictReader(file)
        data = [row for row in csv_file]
        return data
-   
-def get_float(data:str):
-    try:
-        return float(data.strip())
-    except:
-        return 0
 
 clean_list = lambda list_obj : [x for x in list_obj if x is not None]
    

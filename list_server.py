@@ -92,7 +92,7 @@ async def root(request: Request):
 
 @app.get('/etf/list/{list_id}',response_class=HTMLResponse)
 async def root(request: Request,list_id:str):
-    portfolio_object = get_portfolio_stocks(csv_file=portfolio_etf)
+    portfolio_object = get_portfolio_stocks_concise(csv_file=portfolio_etf)
     stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_type=Stock_Type.ETF,folder_location=etf_csv_folder,session=session,list_name=list_id)
     context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
     
@@ -121,7 +121,7 @@ async def root(request: Request):
 
 @app.get('/stock/list/{list_id}',response_class=HTMLResponse)
 async def root(request: Request,list_id:str):
-    portfolio_object = get_portfolio_stocks(csv_file=portfolio_stock)
+    portfolio_object = get_portfolio_stocks_concise(csv_file=portfolio_stock)
     stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_type=Stock_Type.EQUITY,folder_location=stock_csv_folder,session=session,list_name=list_id)
     context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
     

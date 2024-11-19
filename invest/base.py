@@ -5,6 +5,7 @@ from base.stock_base import convert_gfinToyfin
 from base.stock_history import *
 from base.misc import *
 from invest.investment_target import *
+from invest.trade import *
 
 etf_csv_folder = r'invest\stock_list\ETF'
 stock_csv_folder = r'invest\stock_list\stock'
@@ -52,16 +53,18 @@ def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:S
     
     for stock in stock_download_list:
         plain_stock_sym = get_plain_stock(stock)
+        
         history = get_historical_data(STK=stock,session=session)
         current = get_current_data(STK=stock,stock_type=stock_type)
         open_current_change  = get_open_current_change(current_data=current)
         current_stock_price = get_round(get_data_from_dict(current,'current_stock_price'))
         units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
-        portfolio_stk_object = get_data_from_dict(portfolio_object,plain_stock_sym)
-        portfolio_price = get_float(get_data_from_dict(portfolio_stk_object,'PRICE'))
-        portfolio_change = get_change(portfolio_price,current_stock_price)
+
+        portfolio_stk_object : Trade = get_data_from_dict(portfolio_object,plain_stock_sym)
         if(portfolio_stk_object is not None):
-            portfolio_stk_object['PL'] = portfolio_change
+            portfolio_price = portfolio_stk_object.price
+            portfolio_change = get_change(portfolio_price,current_stock_price)
+            portfolio_stk_object.pl = portfolio_change
         
         stocks.append({
                     'RANK' : count,
@@ -73,7 +76,7 @@ def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:S
                     'PRICE' : current_stock_price,
                     'UNITS' : units,
                     'DESC': get_data_from_dict(current['ticker'],'longName'),
-                    'PL' : portfolio_change
+                    'PL' : portfolio_stk_object.pl if portfolio_stk_object is not None else 0
                     })
         count = count + 1
     
@@ -111,10 +114,12 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
     get_table : list = lambda table_key,n_stocks : [ get_stock_key(key) for key in stock_list_object[list_id][table_key][:n_stocks]]
 
     get_portfolio_key :dict = lambda index,portfolio : {
-                                                        'caption': get_data_from_dict(portfolio,'SYMBOL'),
+                                                        'caption': portfolio.symbol,
                                                         'rank': (index+1),
-                                                        'change': get_percentage_format(get_data_from_dict(portfolio,'PL')), 
-                                                        'href' : f'/etf/history/{get_data_from_dict(portfolio,'SYMBOL')}/'} 
+                                                        'change': get_percentage_format(portfolio.pl), 
+                                                        'price':portfolio.price,
+                                                        'units':portfolio.quantity,
+                                                        'href' : f'/etf/history/{portfolio.symbol}/'} 
     
     get_portfolio : list = lambda portfolio : [get_portfolio_key(index,portfolio[symbol]) for index,symbol in enumerate(portfolio)]
 
