@@ -20,4 +20,4 @@ app.add_api_route('/start', start, methods=['GET'])
 app.add_api_route('/shutdown', shutdown, methods=['GET'])
 
 if (__name__ == '__main__'):
-    uvicorn.run('list_server:app', host='localhost', port=8005,workers=cpu_count()*2+1)
+    uvicorn.run('list_server:app', host='0.0.0.0', port=8005,workers=cpu_count()*2+1)

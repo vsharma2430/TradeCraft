@@ -103,7 +103,7 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
     n_stocks_sell = len(stock_list_object[list_id]['STOCK_SELL'])
     n_stocks_total = len(stock_list_object[list_id]['STOCKS'])
 
-    get_stock_key : dict = lambda key : {'rank': get_data_from_dict(key,'RANK'), 
+    get_buy_stock_key : dict = lambda key : {'rank': get_data_from_dict(key,'RANK'), 
                                         'caption': get_data_from_dict(key,'SYMBOL'),
                                         'change' : get_data_from_dict(key,'CHANGE'), 
                                         'price' : get_data_from_dict(key,'PRICE'),
@@ -111,7 +111,14 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
                                         'desc': get_data_from_dict(key,'DESC'),
                                         'href' : f'/etf/history/{get_data_from_dict(key,'SYMBOL')}/'} 
     
-    get_table : list = lambda table_key,n_stocks : [ get_stock_key(key) for key in stock_list_object[list_id][table_key][:n_stocks]]
+    get_sell_stock_key : dict = lambda key : {'rank': get_data_from_dict(key,'RANK'), 
+                                        'caption': get_data_from_dict(key,'SYMBOL'),
+                                        'change' : get_percentage_format(get_data_from_dict(key,'PL')), 
+                                        'price' : get_data_from_dict(key,'PRICE'),
+                                        'desc': get_data_from_dict(key,'DESC'),
+                                        'href' : f'/etf/history/{get_data_from_dict(key,'SYMBOL')}/'} 
+    
+    get_table : list = lambda fn=get_buy_stock_key,table_key=None,n_stocks=len(stock_list_object) : [ fn(key) for key in stock_list_object[list_id][table_key][:n_stocks]]
 
     get_portfolio_key :dict = lambda index,portfolio : {
                                                         'caption': portfolio.symbol,
@@ -130,17 +137,17 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
             'list_buy': 
             {
                 'table_head':'BUY',
-                'table' : get_table('STOCK_BUY',n_stocks_buy),    
+                'table' : get_table(get_buy_stock_key,'STOCK_BUY',n_stocks_buy),    
             },
             'list_sell':
             {
                 'table_head':'SELL',
-                'table' : get_table('STOCK_SELL',n_stocks_sell),    
+                'table' : get_table(get_sell_stock_key,'STOCK_SELL',n_stocks_sell),    
             },
             'list':
             {
                 'table_head':'LIST',
-                'table' : get_table('STOCKS',n_stocks_total),    
+                'table' : get_table(get_buy_stock_key,'STOCKS',n_stocks_total),    
             },
             'portfolio':
             {

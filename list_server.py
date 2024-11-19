@@ -17,6 +17,7 @@ from invest.portfolio import *
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
+
 template_stock_list = 'stock_list.html'
 template_stock_list_stocks = 'stock_list_stocks.html'
 template_stock_data = 'stock_data.html'
@@ -50,7 +51,7 @@ async def root(request: Request):
     )
 
 @app.get('/etf/',response_class=HTMLResponse)
-async def root(request: Request):
+async def root_etf(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
@@ -63,7 +64,7 @@ async def root(request: Request):
     )
 
 @app.get('/stock/')
-async def root(request: Request):
+async def root_stock(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
@@ -79,7 +80,7 @@ async def root(request: Request):
 # lists etf
 
 @app.get('/etf/list/',response_class=HTMLResponse)
-async def root(request: Request):
+async def root_etf_list(request: Request):
     files_object = get_file_stocks_object(folder_location=etf_csv_folder)
     return templates.TemplateResponse(
         request=request, 
@@ -91,7 +92,7 @@ async def root(request: Request):
     )
 
 @app.get('/etf/list/{list_id}',response_class=HTMLResponse)
-async def root(request: Request,list_id:str):
+async def root_etf_list_list_id(request: Request,list_id:str):
     portfolio_object = get_portfolio_stocks_concise(csv_file=portfolio_etf)
     stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_type=Stock_Type.ETF,folder_location=etf_csv_folder,session=session,list_name=list_id)
     context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
@@ -108,7 +109,7 @@ async def root(request: Request,list_id:str):
 # lists stock
 
 @app.get('/stock/list/',response_class=HTMLResponse)
-async def root(request: Request):
+async def root_stock_list(request: Request):
     files_object = get_file_stocks_object(folder_location=stock_csv_folder)
     return templates.TemplateResponse(
         request=request, 
@@ -120,7 +121,7 @@ async def root(request: Request):
     )
 
 @app.get('/stock/list/{list_id}',response_class=HTMLResponse)
-async def root(request: Request,list_id:str):
+async def root_stock_list_list_id(request: Request,list_id:str):
     portfolio_object = get_portfolio_stocks_concise(csv_file=portfolio_stock)
     stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_type=Stock_Type.EQUITY,folder_location=stock_csv_folder,session=session,list_name=list_id)
     context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
@@ -138,7 +139,7 @@ async def root(request: Request,list_id:str):
 # history etf
 
 @app.get('/etf/history/',response_class=HTMLResponse)
-async def root(request: Request):
+async def root_etf_history(request: Request):
     files_object = get_file_stocks_object(etf_csv_folder)
     stocks = []
     for file in files_object:
@@ -156,7 +157,7 @@ async def root(request: Request):
     )
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
-async def root(request: Request,stk_id:str,chart:int=0):
+async def root_etf_history_id(request: Request,stk_id:str,chart:int=0):
     context = get_history_context(STK=stk_id,stock_type=Stock_Type.ETF,session=session,simple= True if chart == 0 else False,chart_type=chart)
     add_chart_context(context=context,chart=chart)
     
@@ -169,7 +170,7 @@ async def root(request: Request,stk_id:str,chart:int=0):
 # history stock
 
 @app.get('/stock/history/',response_class=HTMLResponse)
-async def root(request: Request):
+async def root_stock_history(request: Request):
     files_object = get_file_stocks_object(stock_csv_folder)
     stocks = []
     for file in files_object:
@@ -187,7 +188,7 @@ async def root(request: Request):
     )
 
 @app.get('/stock/history/{stk_id}/',response_class=HTMLResponse)
-async def root(request: Request,stk_id:str,chart:int=0):
+async def root_stock_history_id(request: Request,stk_id:str,chart:int=0):
     context = get_history_context(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session,simple= True if chart == 0 else False)
     add_chart_context(context=context,chart=chart)
     
@@ -202,19 +203,19 @@ async def root(request: Request,stk_id:str,chart:int=0):
 
 @app.get('/etf/ticker/{stk_id}/',response_class=JSONResponse)
 @app.get('/stock/ticker/{stk_id}/',response_class=JSONResponse)
-async def root(request: Request,stk_id:str):
+async def root_ticker(request: Request,stk_id:str):
     return {'ticker': get_ticker_info(STK=stk_id,session=session)}
 
 @app.get('/etf/query/{stk_id}/{variable}',response_class=JSONResponse)
 @app.get('/stock/query/{stk_id}/{variable}',response_class=JSONResponse)
-async def root(request: Request,stk_id:str,variable:str):
+async def root_query(request: Request,stk_id:str,variable:str):
     ticker = get_ticker_info(STK=stk_id,session=session)
     return {f'{variable}': get_data_from_dict(ticker,variable) }
 
 @app.get('/etf/query/{stk_id}/price',response_class=JSONResponse)
-async def root(request: Request,stk_id:str):
+async def root_etf_price(request: Request,stk_id:str):
     return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.ETF,session=session)}
 
 @app.get('/stock/query/{stk_id}/price',response_class=JSONResponse)
-async def root(request: Request,stk_id:str):
+async def root_stock_price(request: Request,stk_id:str):
     return {'price': get_stock_price(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session)}
