@@ -9,8 +9,9 @@ from invest.trade import *
 
 etf_csv_folder = r'invest\stock_list\ETF'
 stock_csv_folder = r'invest\stock_list\stock'
+us_stocks_csv = r'invest\stock_list\US'
 
-def get_file_stocks_object(folder_location:str):
+def get_file_stocks_object(folder_location:str,exclude_all:bool=False):
     array_files = listdir(folder_location)
     
     list_name : str
@@ -20,6 +21,9 @@ def get_file_stocks_object(folder_location:str):
     for list_name in array_files:
         file_path= join(folder_location,list_name)
         id = Path(file_path).stem.upper()
+        
+        if(id.startswith('ALL') and 'NSE' in id and exclude_all):
+            continue
         
         data = read_csv(file_path)
         with open(file_path) as f:

@@ -8,6 +8,8 @@ class Stock_Type(Enum):
 class Stock_Exchange(Enum):
     NSE = 1
     BSE = 2
+    NYSE = 3
+    NASDAQ = 4
     
 class Stock_Symbol(Enum):
     PLAIN = 1

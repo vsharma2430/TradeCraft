@@ -21,6 +21,7 @@ templates = Jinja2Templates(directory='templates')
 template_stock_list = 'stock_list.html'
 template_stock_list_stocks = 'stock_list_stocks.html'
 template_stock_data = 'stock_data.html'
+template_portfolio = 'portfolio_edit_table.html'
 
 class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
     pass
@@ -46,21 +47,21 @@ async def root(request: Request):
         context={
             'title':'TRADE CRAFT - Home',
             'list':[{ 'caption': 'ETF' , 'href' : f'/etf/'},
-                { 'caption': 'Stock' , 'href' : f'/stock/'}],
+                    { 'caption': 'Stock' , 'href' : f'/stock/'}],
             }
     )
+    
+stock_props = lambda stk_type : {'title':f'{stk_type.upper()}',
+                                 'list':[{ 'caption': 'Lists' , 'href' : f'/{stk_type}/list/'},
+                                         { 'caption': 'All Listed (NSE)' , 'href' : f'/{stk_type}/history/'},
+                                         { 'caption': 'Portfolio' , 'href' : f'/{stk_type}/portfolio/'}],}
 
 @app.get('/etf/',response_class=HTMLResponse)
 async def root_etf(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context={
-            'title':'ETF',
-            'list':[{ 'caption': 'Lists' , 'href' : f'/etf/list/'},
-                    { 'caption': 'All Listed (NSE)' , 'href' : f'/etf/history/'},
-                    { 'caption': 'Portfolio' , 'href' : f'/etf/portfolio/'}],
-            }
+        context= stock_props(stk_type='etf')
     )
 
 @app.get('/stock/')
@@ -68,12 +69,32 @@ async def root_stock(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
+        context=stock_props(stk_type='stock')
+    )
+    
+# portfolio etf
+@app.get('/etf/portfolio',response_class=HTMLResponse)
+async def root_etf(request: Request):
+    portfolio_object = get_portfolio_stocks_concise(csv_file=portfolio_etf)
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_portfolio, 
         context={
-            'title':'Stock',
-            'list':[
-                { 'caption': 'Lists' , 'href' : f'/stock/list/'},
-                { 'caption': 'All Listed (NSE)' , 'href' : f'/stock/history/'},
-                { 'caption': 'Portfolio' , 'href' : f'/stock/portfolio/'}],
+            'title':'ETF Portfolio',
+            'portfolio':portfolio_object
+            }
+    )
+    
+# portfolio stock
+@app.get('/stock/portfolio',response_class=HTMLResponse)
+async def root_etf(request: Request):
+    portfolio_object = get_portfolio_stocks_concise(csv_file=portfolio_stock)
+    return templates.TemplateResponse(
+        request=request, 
+        name=template_portfolio, 
+        context={
+            'title':'ETF Portfolio',
+            'portfolio':portfolio_object
             }
     )
 
@@ -81,7 +102,7 @@ async def root_stock(request: Request):
 
 @app.get('/etf/list/',response_class=HTMLResponse)
 async def root_etf_list(request: Request):
-    files_object = get_file_stocks_object(folder_location=etf_csv_folder)
+    files_object = get_file_stocks_object(folder_location=etf_csv_folder,exclude_all=True)
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
@@ -110,7 +131,7 @@ async def root_etf_list_list_id(request: Request,list_id:str):
 
 @app.get('/stock/list/',response_class=HTMLResponse)
 async def root_stock_list(request: Request):
-    files_object = get_file_stocks_object(folder_location=stock_csv_folder)
+    files_object = get_file_stocks_object(folder_location=stock_csv_folder,exclude_all=True)
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
@@ -188,8 +209,8 @@ async def root_stock_history(request: Request):
     )
 
 @app.get('/stock/history/{stk_id}/',response_class=HTMLResponse)
-async def root_stock_history_id(request: Request,stk_id:str,chart:int=0):
-    context = get_history_context(STK=stk_id,stock_type=Stock_Type.EQUITY,session=session,simple= True if chart == 0 else False)
+async def root_stock_history_id(request: Request,stk_id:str,chart:int=0,exchange:int=1):
+    context = get_history_context(STK=stk_id,stock_exchange=Stock_Exchange(exchange),stock_type=Stock_Type.EQUITY,session=session,simple= True if chart == 0 else False)
     add_chart_context(context=context,chart=chart)
     
     return templates.TemplateResponse(

@@ -16,19 +16,19 @@ def get_price_server_stock_current_price(stock_ticker,stock_type:Stock_Type=None
 
         if(stock_type == Stock_Type.EQUITY):
             if('currentPrice' in stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'currentPrice'))
+                return get_float(get_data_from_dict(stock_ticker,'currentPrice'))
             elif('previousClose' in  stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'previousClose'))
+                return get_float(get_data_from_dict(stock_ticker,'previousClose'))
         
         elif(stock_type == Stock_Type.ETF):
             if('bid' in stock_ticker and 'ask' in stock_ticker):
-                return float(average([get_data_from_dict(stock_ticker,'bid'),get_data_from_dict(stock_ticker,'ask')]))
+                return get_float(average([get_data_from_dict(stock_ticker,'bid'),get_data_from_dict(stock_ticker,'ask')]))
             elif('previousClose' in  stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'previousClose'))
+                return get_float(get_data_from_dict(stock_ticker,'previousClose'))
 
 def get_price_server_stock_previous_close(stock_ticker)->float:
     if(stock_ticker!=None):
-        return float(get_data_from_dict(stock_ticker,'previousClose'))
+        return get_float(get_data_from_dict(stock_ticker,'previousClose'))
 
 @timeit
 def get_stock_price(STK:str,stock_type:Stock_Type=None,session=None)->float:
@@ -41,15 +41,15 @@ def get_stock_price(STK:str,stock_type:Stock_Type=None,session=None)->float:
 
         if(stock_type == Stock_Type.EQUITY):
             if('currentPrice' in stock_ticker):
-                return float(get_data_from_dict(stock_ticker,'currentPrice'))
+                return get_float(get_data_from_dict(stock_ticker,'currentPrice'))
             else:
-                return float(get_data_from_dict(stock_ticker,'previousClose'))
+                return get_float(get_data_from_dict(stock_ticker,'previousClose'))
         
         elif(stock_type == Stock_Type.ETF):
             if('bid' in stock_ticker and 'ask' in stock_ticker):
-                return float(average([get_data_from_dict(stock_ticker,'bid'),get_data_from_dict(stock_ticker,'ask')]))
+                return get_float(average([get_data_from_dict(stock_ticker,'bid'),get_data_from_dict(stock_ticker,'ask')]))
             else:
-                return float(get_data_from_dict(stock_ticker,'previousClose'))
+                return get_float(get_data_from_dict(stock_ticker,'previousClose'))
     
 def get_stock_price_print(STK:str,stock_type:Stock_Type=None)->str:
     stock_ticker = get_ticker_info(STK)

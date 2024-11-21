@@ -34,6 +34,9 @@ def get_stock_exchange(exchange:str)->Stock_Exchange:
         return Stock_Exchange.NSE
     elif (exchange.startswith('BS') or exchange.startswith('BE')):
         return Stock_Exchange.BSE
+    elif (exchange.endswith('NE')):
+        return Stock_Exchange.NYSE
+
 
 def get_stocktype_from_ticker(stock_ticker:yf.Ticker)->Stock_Type:
     if(get_data_from_dict(stock_ticker,'currentPrice')!=None):
@@ -70,6 +73,10 @@ def get_stock_symbol(stock:str,stock_exchange:Stock_Exchange=Stock_Exchange.NSE)
         return f'{stock}.NS'
     elif(stock_exchange == Stock_Exchange.BSE):
         return f'{stock}.BO'
+    elif(stock_exchange == Stock_Exchange.NYSE):
+        return f'{stock}.NE'
+    elif(stock_exchange == Stock_Exchange.NASDAQ):
+        return f'{stock}'
     
 def convert_gfinToyfin(stock:str)->str:
     stock_st = get_stock_symboltype(stock)
@@ -83,13 +90,13 @@ def convert_gfinToyfin(stock:str)->str:
     
     return stock
 
-def get_yfin_symbol(stock:str)->str:
+def get_yfin_symbol(stock:str,stock_exchange:Stock_Exchange=Stock_Exchange.NSE)->str:
     s_stype = get_stock_symboltype(stock)
     stk = stock
     if(s_stype == Stock_Symbol.PLAIN):
-        stk = get_stock_symbol(stock)
+        stk = get_stock_symbol(stock=stock,stock_exchange=stock_exchange)
     elif (s_stype == Stock_Symbol.GFIN):
-        stk = convert_gfinToyfin(stock)
+        stk = convert_gfinToyfin(stock=stock)
     return stk
     
     

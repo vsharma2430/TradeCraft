@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <!-- CSS files-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    {% include 'cdn_static.html' %}
+
+    <title>{{title}}</title>
+    </head>
+  <body>
+
+    <div>
+        {% include 'top_navbar.html' %}
+
+        <div>
+            <div class="table-responsive col-md-10">
+                <table class="table table-bordered table-striped table-hover table-condensed text-center table-fixed" id="DyanmicTable">
+                    <thead>
+                        <tr>
+                            <th class="text-center">
+                                Stock
+                            </th>
+                            <th class="text-center">
+                                Buy/Sell
+                            </th>
+                            <th class="text-center">
+                                Price
+                            </th>
+                            <th class="text-center">
+                                Units
+                            </th>
+                            <th class="text-center">
+                                <button id="addNewRow" class="btn btn-primary btn-sm">Add New Row</button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for key, value in portfolio.items() %}
+                            <tr>
+                                <td>
+                                    {{key}}
+                                </td>
+                                <td>
+                                    BUY
+                                </td>
+                                <td>
+                                    PRICE 1
+                                </td>
+                                <td>
+                                    X
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+        {% include 'bottom_bar.html' %}
+    </div>
+   
+
+    <!--JS Files-->
+    <script  src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
+    <script src="/static/bootstable.min.js"></script>
+    <script>
+        $('#DyanmicTable').SetEditable({ $addButton: $('#addNewRow')});
+    </script>
+  </body>
+</html>

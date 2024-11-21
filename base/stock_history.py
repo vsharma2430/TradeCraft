@@ -13,37 +13,34 @@ logger = getLogger('uvicorn.error')
 def get_historical_data(STK:str,
                         start_date:dt.date = (dt.datetime.now()-dt.timedelta(days=365)).date(),
                         end_date:dt.date=dt.datetime.now().date(),
+                        stock_exchange:Stock_Exchange = Stock_Exchange.NSE,
                         session=None):
-    #logger.info(f'Fetcing data for {STK}')
 
-    STK = get_yfin_symbol(STK)
-    stk_ticker= get_ticker(STK=STK,session=session)
-    stk_historical_df = stk_ticker.history(start=start_date, end=end_date)
-    candle_dict = candle_df(stk_historical_df)
-    stk_historical_df = candle_dict['candle_df']
-    
-    #average_price_30 = average([stk_historical_df['Open'].tail(20).mean() , stk_historical_df['Close'].tail(20).mean()])
-    #average_price_90 = average([stk_historical_df['Open'].tail(60).mean() , stk_historical_df['Close'].tail(60).mean()])
-    #average_price_365 = average([stk_historical_df['Open'].mean() , stk_historical_df['Close'].mean()])
+	STK = get_yfin_symbol(stock=STK,stock_exchange=stock_exchange)
+	
+	stk_ticker= get_ticker(STK=STK,session=session)
+	stk_historical_df = stk_ticker.history(start=start_date, end=end_date)
+	candle_dict = candle_df(stk_historical_df)
+	stk_historical_df = candle_dict['candle_df']
+	
+	average_price_30 = stk_historical_df['Close'].tail(20).mean()
+	average_price_90 = stk_historical_df['Close'].tail(90).mean()
+	average_price_365 = stk_historical_df['Close'].mean()
 
-    average_price_30 = stk_historical_df['Close'].tail(20).mean()
-    average_price_90 = stk_historical_df['Close'].tail(90).mean()
-    average_price_365 = stk_historical_df['Close'].mean()
-
-    average_volume_30 = stk_historical_df['Volume'].tail(20).mean()
-    average_volume_90 = stk_historical_df['Volume'].tail(60).mean()
-    average_volume_365 = stk_historical_df['Volume'].mean()
-    
-    return {'df' : stk_historical_df ,
-            'start_date' : start_date , 
-            'end_date' : end_date,
-            'dma_30' : average_price_30 , 
-            'dma_90' : average_price_90 , 
-            'dma_365' : average_price_365 , 
-            'volume_30':average_volume_30,
-            'volume_90':average_volume_90,
-            'volume_365':average_volume_365,
-            } 
+	average_volume_30 = stk_historical_df['Volume'].tail(20).mean()
+	average_volume_90 = stk_historical_df['Volume'].tail(60).mean()
+	average_volume_365 = stk_historical_df['Volume'].mean()
+	
+	return {'df' : stk_historical_df ,
+		'start_date' : start_date , 
+		'end_date' : end_date,
+		'dma_30' : average_price_30 , 
+		'dma_90' : average_price_90 , 
+		'dma_365' : average_price_365 , 
+		'volume_30':average_volume_30,
+		'volume_90':average_volume_90,
+		'volume_365':average_volume_365,
+		} 
 
 def get_current_data(STK:str,stock_type:Stock_Type):
         ticker = get_ticker_price_server(STK=STK)
@@ -63,8 +60,15 @@ def get_open_current_change(current_data:dict):
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
         return get_change_percentage(previous_close_price,current_stock_price)
 
-def get_history_context(STK:str,stock_type:Stock_Type,session=None,simple=True,chart_type=0):
-    history_data = get_historical_data(STK=STK,session=session)
+def get_history_context(STK:str,
+                        stock_type:Stock_Type,
+                        stock_exchange:Stock_Exchange = Stock_Exchange.NSE,
+                        simple=True,
+                        chart_type=0,
+                        session=None,
+                        ):
+        
+    history_data = get_historical_data(STK=STK,stock_exchange=stock_exchange,session=session)
     current_data = get_current_data(STK=STK,stock_type=stock_type)
     
     history_data_df : DataFrame = get_data_from_dict(history_data,'df')
