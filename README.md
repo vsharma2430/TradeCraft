@@ -15,10 +15,12 @@ PyETF is a web application built to help the user make informed trading decision
 - Yfinance-cache
 - Plotly
 - Uvicorn
+- PyPrice
 
 ### Installation Instructions
 
-- Install Python 3.12+ from [Official Python website](https://www.python.org/downloads/)
+- Install Python 3.12+ from [Official Python website](https://www.python.org/downloads/).
+- Install PyPrice from (https://github.com/vsharma2430/PyPrice).
 - Create a folder in your system 'PyETF'.
 - Open terminal/command prompt in the folder location.
 - Clone this Git Repository to a desired folder.
