@@ -26,7 +26,7 @@ TradeCraft is a web application built to help the user make informed trading dec
 - Clone this Git Repository to a desired folder.
 
 ```custom_prefix(E:\PyETF>)
-git clone https://github.com/vsharma2430/PyETF
+git clone https://github.com/vsharma2430/TradeCraft
 ```
 - Create a virtual environment for this project.
 
