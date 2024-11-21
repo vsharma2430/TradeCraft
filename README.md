@@ -21,28 +21,28 @@ TradeCraft is a web application built to help the user make informed trading dec
 
 - Install Python 3.12+ from [Official Python website](https://www.python.org/downloads/).
 - Install PyPrice from (https://github.com/vsharma2430/PyPrice).
-- Create a folder in your system 'PyETF'.
+- Create a folder in your system 'TradeCraft'.
 - Open the terminal/command prompt in the folder location.
 - Clone this Git Repository to a desired folder.
 
-```custom_prefix(E:\PyETF>)
+```custom_prefix(E:\TradeCraft>)
 git clone https://github.com/vsharma2430/TradeCraft
 ```
 - Create a virtual environment for this project.
 
-```custom_prefix(E:\PyETF>)
+```custom_prefix(E:\TradeCraft>)
 python -m venv .venv
 ```
 - Activate virtual environment.
-```custom_prefix(E:\PyETF>)
-E:\PyETF\.venv\Scripts\Activate.ps1
+```custom_prefix(E:\TradeCraft>)
+E:\TradeCraft\.venv\Scripts\Activate.ps1
 ```
 - Install dependencies.
-```custom_prefix((.venv) E:\PyETF>)
+```custom_prefix((.venv) E:\TradeCraft>)
 pip install -r requirements.txt
 ```
 - Run client.py
-```custom_prefix((.venv) E:\PyETF>)
+```custom_prefix((.venv) E:\TradeCraft>)
 python client.py
 ```
 - Go to the link to access the web app (http://localhost:8005/).
