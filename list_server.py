@@ -118,7 +118,7 @@ async def root_etf_list_list_id(request: Request,list_id:str):
     stock_download_list = get_stock_download_list(folder_location=etf_csv_folder,list_name=list_id)
     history_data = history_async(stock_download_list=stock_download_list,session=session,)
     current_data = current_async(stock_download_list=stock_download_list,stock_type=Stock_Type.ETF,session=session)
-    stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_download_list=stock_download_list,list_name=list_id,history_task=history_data,current_task=current_data)
+    stock_list_object = get_stock_list_object(portfolio_object=portfolio_object,stock_download_list=stock_download_list,list_name=list_id,history_data=history_data,current_data=current_data)
     context = get_stock_list_context(list_id=list_id,stock_list_object=stock_list_object,portfolio_object=portfolio_object)
     
     if(context['status'] == 'success'):
@@ -221,7 +221,6 @@ async def root_stock_history_id(request: Request,stk_id:str,stock_data:int=1,cha
         name=template_stock_data, 
         context=context
     )
-
 
 # ticker and price query
 

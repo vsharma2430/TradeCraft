@@ -47,6 +47,10 @@ class Stock_Page(Enum):
     CLASSIC = 1
     DETAILED = 2
 
+class Market_Open(Enum):
+    OPEN = 1
+    CLOSE = 2
+
 rolling_window:list=[5,10,20,50,100,200]
 trace_types = ['DMA','Support','Resistance']
 

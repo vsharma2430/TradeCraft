@@ -71,7 +71,7 @@ def current_async(stock_download_list:list,stock_type:Stock_Type,session=None):
 
 def get_stock_list_object(portfolio_object:dict,
                           stock_download_list:list,list_name:str,
-                          history_task:dict,current_task:dict,
+                          history_data:dict,current_data:dict,
                           buy_count:int=10,sell_count:int=10):
     stock_list_object = {}
     stocks = []
@@ -81,9 +81,9 @@ def get_stock_list_object(portfolio_object:dict,
     
     for stock in stock_download_list:
         plain_stock_sym = get_plain_stock(stock)
-        history_data_stk = history_task[stock]
-        current_data_stk = current_task[stock]
-        open_current_change  = get_open_current_change(current_data=current_data_stk)
+        history_data_stk = history_data[stock]
+        current_data_stk = current_data[stock]
+        open_current_change  = get_open_current_change(current_data=current_data_stk,history_data=history_data[stock]['df'])
         current_stock_price = get_round(get_data_from_dict(current_data_stk,'current_stock_price'))
         units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
 

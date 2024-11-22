@@ -44,9 +44,11 @@ def get_historical_data(STK:str,
 
 def get_current_data(STK:str,stock_type:Stock_Type):
         ticker = get_ticker_price_server(STK=STK)
+        price,open = get_price_server_stock_current_price(stock_ticker=ticker,stock_type=stock_type)
         return  {
-                'current_stock_price' : get_round(get_price_server_stock_current_price(stock_ticker=ticker,stock_type=stock_type)),
+                'current_stock_price' : get_round(price),
                 'previous_close' : get_round(get_price_server_stock_previous_close(ticker)),
+                'market':open,
                 'ticker' : ticker
         }
 
@@ -55,10 +57,21 @@ def get_dma_change(history_data:dict,current_data:dict):
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
         return get_change_percentage(average_price,current_stock_price)
 
-def get_open_current_change(current_data:dict):
+def get_open_current_change(current_data:dict,history_data:DataFrame=None):
         previous_close_price = get_data_from_dict(current_data,'previous_close')
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
-        return get_change_percentage(previous_close_price,current_stock_price)
+
+        if(history_data != None):
+                close_minus_1 = history_data.iloc[-1]['Close']
+                close_minus_2 = history_data.iloc[-2]['Close']
+
+                if(current_stock_price!=0 and current_data['market'] == Market_Open.OPEN):
+                        return get_change_percentage(previous_close_price,current_stock_price)
+                else:
+                        return get_change_percentage(close_minus_1,close_minus_2)
+        else:
+                return get_change_percentage(previous_close_price,current_stock_price)
+
 
 def get_history_context(STK:str,
                         stock_type:Stock_Type,
@@ -76,7 +89,7 @@ def get_history_context(STK:str,
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
         previous_close_stock_price = get_data_from_dict(current_data,'previous_close')
         
-        open_current_change = get_open_current_change(current_data)
+        open_current_change = get_open_current_change(current_data,history_data_df)
 
         return {
                 'title':f'Stock History : {STK}',

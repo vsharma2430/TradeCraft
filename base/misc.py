@@ -106,6 +106,14 @@ def read_csv(file_loc):
        data = [row for row in csv_file]
        return data
 
+def is_time_between(begin_time, end_time, check_time=None):
+    # If check time is not given, default to current UTC time
+    check_time = check_time or datetime.utcnow().time()
+    if begin_time < end_time:
+        return check_time >= begin_time and check_time <= end_time
+    else: # crosses midnight
+        return check_time >= begin_time or check_time <= end_time
+    
 clean_list = lambda list_obj : [x for x in list_obj if x is not None]
    
 
