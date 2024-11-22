@@ -46,6 +46,8 @@ class Chart_Type(Enum):
 class Stock_Page(Enum):
     CLASSIC = 1
     DETAILED = 2
+    INFO = 3
+    HISTORY = 4
 
 class Market_Open(Enum):
     OPEN = 1

@@ -6,7 +6,6 @@ from base.stock_history import *
 from base.misc import *
 from invest.investment_target import *
 from invest.trade import *
-import asyncio
 
 etf_csv_folder = r'invest\stock_list\ETF'
 stock_csv_folder = r'invest\stock_list\stock'
@@ -73,17 +72,14 @@ def get_stock_list_object(portfolio_object:dict,
                           stock_download_list:list,list_name:str,
                           history_data:dict,current_data:dict,
                           buy_count:int=10,sell_count:int=10):
-    stock_list_object = {}
     stocks = []
-    count = 1
-    
     portfolio_stocks = set([get_plain_stock(x) for x in portfolio_object])
     
-    for stock in stock_download_list:
+    for index,stock in enumerate(stock_download_list):
         plain_stock_sym = get_plain_stock(stock)
         history_data_stk = history_data[stock]
         current_data_stk = current_data[stock]
-        open_current_change  = get_open_current_change(current_data=current_data_stk,history_data=history_data[stock]['df'])
+        open_current_change  = get_open_current_change(current_data=current_data_stk,history_data=history_data_stk['df'])
         current_stock_price = get_round(get_data_from_dict(current_data_stk,'current_stock_price'))
         units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
 
@@ -94,7 +90,7 @@ def get_stock_list_object(portfolio_object:dict,
             portfolio_stk_object.pl = portfolio_change
         
         stocks.append({
-                    'RANK' : count,
+                    'RANK' : index+1,
                     'SYMBOL': stock , 
                     'PLAIN_STK' : plain_stock_sym,
                     'HISTORY' : history_data_stk,
@@ -105,7 +101,6 @@ def get_stock_list_object(portfolio_object:dict,
                     'DESC': get_data_from_dict(current_data_stk['ticker'],'longName'),
                     'PL' : portfolio_stk_object.pl if portfolio_stk_object is not None else 0
                     })
-        count = count + 1
     
     stocks.sort(key = lambda x:x['CHANGE'])
     stocks_buy = stocks
@@ -116,19 +111,19 @@ def get_stock_list_object(portfolio_object:dict,
     stocks_buy_person = clean_list(stocks_buy_person)
     stocks_sell_person = clean_list(stocks_sell_person)
 
-    stock_list_object = {'NAME' : list_name , 
+    return { list_name:{ 'NAME' : list_name , 
                          'STOCKS' : stocks , 
                          'STOCK_BUY' : stocks_buy_person[:buy_count] , 
                          'STOCK_SELL' : stocks_sell_person[:sell_count]
-                        }
-    
-    return { list_name:stock_list_object} 
+                        }} 
 
 def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:dict):
 
     n_stocks_buy = len(stock_list_object[list_id]['STOCK_BUY'])
     n_stocks_sell = len(stock_list_object[list_id]['STOCK_SELL'])
     n_stocks_total = len(stock_list_object[list_id]['STOCKS'])
+    
+    stocks_syms = [x['SYMBOL'] for x in stock_list_object[list_id]['STOCKS']]
 
     get_buy_stock_key : dict = lambda key : {'rank': get_data_from_dict(key,'RANK'), 
                                         'caption': get_data_from_dict(key,'SYMBOL'),
@@ -153,7 +148,8 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
                                                         'change': get_percentage_format(portfolio.pl), 
                                                         'price':portfolio.price,
                                                         'units':portfolio.quantity,
-                                                        'href' : f'/etf/history/{portfolio.symbol}/'} 
+                                                        'href' : f'/etf/history/{portfolio.symbol}/'
+                                                        } if (portfolio.symbol in stocks_syms) else None
     
     get_portfolio : list = lambda portfolio : [get_portfolio_key(index,portfolio[symbol]) for index,symbol in enumerate(portfolio)]
 
@@ -179,7 +175,7 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
             'portfolio':
             {
                 'table_head':'PORTFOLIO',
-                'table' : get_portfolio(portfolio_object),    
+                'table' : clean_list(get_portfolio(portfolio_object)),    
             }
         }
     

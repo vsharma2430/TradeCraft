@@ -10,6 +10,19 @@ from base.stock_candle_stick_pattern import *
 logger = getLogger('uvicorn.error')
 
 @timeit
+def get_historical_data_1m(STK:str,
+                        start_date:dt.date = (dt.datetime.now()-dt.timedelta(days=59)).date(),
+                        end_date:dt.date=dt.datetime.now().date(),
+                        stock_exchange:Stock_Exchange = Stock_Exchange.NSE,
+                        session=None):
+
+        STK = get_yfin_symbol(stock=STK,stock_exchange=stock_exchange)
+        stk_ticker= get_ticker(STK=STK,session=session)
+        stk_historical_df = stk_ticker.history(start=start_date, end=end_date,interval='5m')
+        
+        return {'df' : stk_historical_df}
+
+@timeit
 def get_historical_data(STK:str,
                         start_date:dt.date = (dt.datetime.now()-dt.timedelta(days=365)).date(),
                         end_date:dt.date=dt.datetime.now().date(),
@@ -61,7 +74,9 @@ def get_open_current_change(current_data:dict,history_data:DataFrame=None):
         previous_close_price = get_data_from_dict(current_data,'previous_close')
         current_stock_price = get_data_from_dict(current_data,'current_stock_price')
 
-        if(history_data != None):
+        if(type(history_data) == type(None)):
+                return get_change_percentage(previous_close_price,current_stock_price)
+        else:
                 close_minus_1 = history_data.iloc[-1]['Close']
                 close_minus_2 = history_data.iloc[-2]['Close']
 
@@ -69,9 +84,6 @@ def get_open_current_change(current_data:dict,history_data:DataFrame=None):
                         return get_change_percentage(previous_close_price,current_stock_price)
                 else:
                         return get_change_percentage(close_minus_1,close_minus_2)
-        else:
-                return get_change_percentage(previous_close_price,current_stock_price)
-
 
 def get_history_context(STK:str,
                         stock_type:Stock_Type,

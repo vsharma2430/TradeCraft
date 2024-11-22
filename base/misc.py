@@ -114,6 +114,11 @@ def is_time_between(begin_time, end_time, check_time=None):
     else: # crosses midnight
         return check_time >= begin_time or check_time <= end_time
     
+def market_open_india():
+    start_now=datetime.datetime.now().replace(hour=9, minute=15, second=0, microsecond=0)
+    end_now=datetime.datetime.now().replace(hour=15, minute=30, second=0, microsecond=0)
+    return start_now<datetime.datetime.now()<end_now
+    
 clean_list = lambda list_obj : [x for x in list_obj if x is not None]
    
 
