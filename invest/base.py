@@ -6,6 +6,7 @@ from base.stock_history import *
 from base.misc import *
 from invest.investment_target import *
 from invest.trade import *
+import asyncio
 
 etf_csv_folder = r'invest\stock_list\ETF'
 stock_csv_folder = r'invest\stock_list\stock'
@@ -40,16 +41,39 @@ def get_file_stocks_object(folder_location:str,exclude_all:bool=False):
 
     return file_stocks
 
-@timeit
-def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:Stock_Type,session=None,list_name=None,buy_count:int=10,sell_count:int=10):
-    stock_list_object = {}
+def get_stock_download_list(folder_location:str,list_name=None):
     stock_download_list:list = []
     file_stocks = get_file_stocks_object(folder_location=folder_location)
     
     if(list_name != None and list_name in file_stocks):
         stock_download_list = file_stocks[list_name]
-    
-    logger.info(f'Fetching data for {len(stock_download_list)} symbols')
+    return stock_download_list
+
+@timeit_concise
+def history_async(stock_download_list:list,session=None):
+    logger.info(f'Fetching history data for {len(stock_download_list)} symbols')
+
+    history_stks = {}
+    for stock in stock_download_list:
+        history_stks[stock] = get_historical_data(STK=stock,session=session)
+
+    return history_stks
+
+@timeit_concise
+def current_async(stock_download_list:list,stock_type:Stock_Type,session=None):
+    logger.info(f'Fetching current data for {len(stock_download_list)} symbols')
+
+    current_stks = {}
+    for stock in stock_download_list:
+        current_stks[stock] = get_current_data(STK=stock,stock_type=stock_type)
+
+    return current_stks
+
+def get_stock_list_object(portfolio_object:dict,
+                          stock_download_list:list,list_name:str,
+                          history_task:dict,current_task:dict,
+                          buy_count:int=10,sell_count:int=10):
+    stock_list_object = {}
     stocks = []
     count = 1
     
@@ -57,11 +81,10 @@ def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:S
     
     for stock in stock_download_list:
         plain_stock_sym = get_plain_stock(stock)
-        
-        history = get_historical_data(STK=stock,session=session)
-        current = get_current_data(STK=stock,stock_type=stock_type)
-        open_current_change  = get_open_current_change(current_data=current)
-        current_stock_price = get_round(get_data_from_dict(current,'current_stock_price'))
+        history_data_stk = history_task[stock]
+        current_data_stk = current_task[stock]
+        open_current_change  = get_open_current_change(current_data=current_data_stk)
+        current_stock_price = get_round(get_data_from_dict(current_data_stk,'current_stock_price'))
         units = 0 if current_stock_price == 0 else round(order_price / current_stock_price)
 
         portfolio_stk_object : Trade = get_data_from_dict(portfolio_object,plain_stock_sym)
@@ -74,12 +97,12 @@ def get_stock_list_object(portfolio_object:dict,folder_location:str,stock_type:S
                     'RANK' : count,
                     'SYMBOL': stock , 
                     'PLAIN_STK' : plain_stock_sym,
-                    'HISTORY' : history,
-                    'CURRENT' : current,
+                    'HISTORY' : history_data_stk,
+                    'CURRENT' : current_data_stk,
                     'CHANGE' : get_round(open_current_change),
                     'PRICE' : current_stock_price,
                     'UNITS' : units,
-                    'DESC': get_data_from_dict(current['ticker'],'longName'),
+                    'DESC': get_data_from_dict(current_data_stk['ticker'],'longName'),
                     'PL' : portfolio_stk_object.pl if portfolio_stk_object is not None else 0
                     })
         count = count + 1

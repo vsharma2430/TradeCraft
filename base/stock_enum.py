@@ -38,6 +38,15 @@ class Candle_Pattern(Enum):
     Hanging_Man_Bearish = 14
     Hanging_Man_Bullish = 15
 
+class Chart_Type(Enum):
+    CLASSIC = 1
+    DETAILED = 2
+    VOLUME = 3
+
+class Stock_Page(Enum):
+    CLASSIC = 1
+    DETAILED = 2
+
 rolling_window:list=[5,10,20,50,100,200]
 trace_types = ['DMA','Support','Resistance']
 

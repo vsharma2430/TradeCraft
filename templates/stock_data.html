@@ -13,7 +13,7 @@
 
                     <div class="form-floating" style="margin: 1%;min-width: 150px;">
                         <select id="chart_select" class="form-select" aria-label="Chart Selection">
-                            <option value="{{simple_url}}" {{simple_selected}}>Simple</option>
+                            <option value="{{simple_url}}" {{simple_selected}}>Classic</option>
                             <option value="{{detailed_url}}" {{detailed_selected}}>Detailed</option>
                             <option value="{{volume_url}}" {{volume_selected}}>Volume</option>
                         </select>
@@ -21,14 +21,23 @@
                         <label for="chart_select">Chart</label>
                     </div>
 
-                    <div class="form-floating" style="margin: 1%;">
+                    <div class="form-floating" style="margin: 1%;min-width: 150px;">
                         <input id="startDate" class="form-control" type="date" value="{{start_date}}" readonly/>
                         <label for="startDate">Start Date</label>
                     </div>
 
-                    <div class="form-floating" style="margin: 1%;">
+                    <div class="form-floating" style="margin: 1%;min-width: 150px;">
                         <input id="endDate" class="form-control" type="date" value="{{end_date}}" readonly/>
                         <label for="endDate">End Date</label>
+                    </div>
+
+                    <div class="form-floating" style="margin: 1%;min-width: 150px;">
+                        <select id="stock_data_select" class="form-select" aria-label="Stock Data">
+                            <option value="{{data_type1_url}}" {{data_type1_selected}}>Classic</option>
+                            <option value="{{data_type2_url}}" {{data_type2_selected}}>Detailed</option>
+                        </select>
+
+                        <label for="stock_data_select">Stock Data</label>
                     </div>
 
                 </div>
@@ -69,7 +78,7 @@
         </div>
 
         
-        {% if simple == false %}
+        {% if stock_data_display != 1 %}
 
             <h5 class="display-6" style="margin-left: 2%;">Stock Details</h5>
 

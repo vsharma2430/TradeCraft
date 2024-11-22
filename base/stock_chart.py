@@ -6,9 +6,11 @@ from pandas import DataFrame
 from datetime import datetime
 from base.misc import *
 from base.stock_base import trace_types,rolling_window
-import plotly.express as px
+from base.stock_enum import *
+from plotly.express.colors import qualitative
 
-colors_pastel = px.colors.qualitative.Pastel
+
+colors_pastel = qualitative.Pastel
 
 def get_dates(df):
     get_dt = lambda dd : datetime.fromtimestamp(dd/1000000000)
@@ -18,7 +20,17 @@ def get_simple_chart(df:DataFrame):
     fig = df.plot(backend='plotly')
     return fig.to_html(full_html=False)
 
-def get_chart(df:DataFrame,simple_chart=True,simple_window=100):
+def get_chart(history_data_df:DataFrame,chart_type:Chart_Type):
+    chart=None
+    if(chart_type == Chart_Type.CLASSIC):
+            chart = get_detailed_chart(history_data_df,simple_chart=True)
+    if(chart_type == Chart_Type.DETAILED):
+            chart = get_detailed_chart(history_data_df,simple_chart=False)
+    elif(chart_type == Chart_Type.VOLUME):
+            chart = get_chart_with_volume(history_data_df)
+    return chart
+
+def get_detailed_chart(df:DataFrame,simple_chart=True,simple_window=100):
     subplot_titles=('OHLC','Volume')
     row_width=[0.1,0.8]
     fig = make_subplots(rows=len(subplot_titles), cols=1, shared_xaxes=True, 
@@ -82,6 +94,6 @@ def get_chart_with_volume(df:DataFrame):
     return fig.to_html(full_html=False)
 
 def add_chart_context(context:dict,chart:int):
-    context['simple_url'],context['simple_selected']=f'0','selected' if chart == 0 else ''
-    context['detailed_url'],context['detailed_selected']=f'1','selected' if chart == 1 else ''
-    context['volume_url'],context['volume_selected']=f'2','selected' if chart == 2 else ''
+    context['simple_url'],context['simple_selected']=f'1','selected' if chart == Chart_Type.CLASSIC else ''
+    context['detailed_url'],context['detailed_selected']=f'2','selected' if chart == Chart_Type.DETAILED else ''
+    context['volume_url'],context['volume_selected']=f'3','selected' if chart == Chart_Type.VOLUME else ''

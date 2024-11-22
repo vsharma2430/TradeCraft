@@ -63,38 +63,38 @@ def get_open_current_change(current_data:dict):
 def get_history_context(STK:str,
                         stock_type:Stock_Type,
                         stock_exchange:Stock_Exchange = Stock_Exchange.NSE,
-                        simple=True,
-                        chart_type=0,
+                        stock_data_display=Stock_Page.CLASSIC,
+                        chart_type=Chart_Type.CLASSIC,
                         session=None,
                         ):
         
-    history_data = get_historical_data(STK=STK,stock_exchange=stock_exchange,session=session)
-    current_data = get_current_data(STK=STK,stock_type=stock_type)
-    
-    history_data_df : DataFrame = get_data_from_dict(history_data,'df')
-    history_data_html = history_data_df[::-1].to_html().replace('dataframe','table') # table-fixed
-    current_stock_price = get_data_from_dict(current_data,'current_stock_price')
-    previous_close_stock_price = get_data_from_dict(current_data,'previous_close')
-    
-    open_current_change = get_open_current_change(current_data)
+        history_data = get_historical_data(STK=STK,stock_exchange=stock_exchange,session=session)
+        current_data = get_current_data(STK=STK,stock_type=stock_type)
+        
+        history_data_df : DataFrame = get_data_from_dict(history_data,'df')
+        history_data_html = history_data_df[::-1].to_html().replace('dataframe','table') # table-fixed
+        current_stock_price = get_data_from_dict(current_data,'current_stock_price')
+        previous_close_stock_price = get_data_from_dict(current_data,'previous_close')
+        
+        open_current_change = get_open_current_change(current_data)
 
-    return {
-            'title':f'Stock History : {STK}',
-            'stock_id':STK,
-            'simple':simple,
-            'chart_type':chart_type,
-            'previous_close': f'{previous_close_stock_price}',
-            'cmp': f'{current_stock_price}',
-            'start_date':f'{get_data_from_dict(history_data,'start_date')}',
-            'end_date':f'{get_data_from_dict(history_data,'end_date')}',
-            'dma_30':get_round(get_data_from_dict(history_data,'dma_30')),
-            'dma_90':get_round(get_data_from_dict(history_data,'dma_90')),
-            'dma_365':get_round(get_data_from_dict(history_data,'dma_365')),
-            'change':f'{open_current_change}',
-            'volume_30':get_format(get_round(get_data_from_dict(history_data,'volume_30'))),
-            'volume_90':get_format(get_round(get_data_from_dict(history_data,'volume_90'))),
-            'volume_365':get_format(get_round(get_data_from_dict(history_data,'volume_365'))),
-            'history': history_data_html,
-            'chart':get_chart(history_data_df,simple_chart=simple) if (chart_type ==0 or chart_type ==1) else get_chart_with_volume(history_data_df),
-            'current_data':current_data['ticker']
-            }
+        return {
+                'title':f'Stock History : {STK}',
+                'stock_id':STK,
+                'stock_data_display':stock_data_display.value,
+                'chart_type':chart_type,
+                'previous_close': f'{previous_close_stock_price}',
+                'cmp': f'{current_stock_price}',
+                'start_date':f'{get_data_from_dict(history_data,'start_date')}',
+                'end_date':f'{get_data_from_dict(history_data,'end_date')}',
+                'dma_30':get_round(get_data_from_dict(history_data,'dma_30')),
+                'dma_90':get_round(get_data_from_dict(history_data,'dma_90')),
+                'dma_365':get_round(get_data_from_dict(history_data,'dma_365')),
+                'change':f'{open_current_change}',
+                'volume_30':get_format(get_round(get_data_from_dict(history_data,'volume_30'))),
+                'volume_90':get_format(get_round(get_data_from_dict(history_data,'volume_90'))),
+                'volume_365':get_format(get_round(get_data_from_dict(history_data,'volume_365'))),
+                'history': history_data_html,
+                'chart': get_chart(history_data_df=history_data_df,chart_type=chart_type) ,
+                'current_data':current_data['ticker']
+                }
