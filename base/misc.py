@@ -100,6 +100,19 @@ def timeit_concise(func):
         return result
     return timeit_wrapper
 
+def timeit_concise_print(func):
+    @wraps(func)
+    def timeit_wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        total_time = end_time - start_time
+        
+        print(f'Function {func.__name__} took {total_time:.4f} seconds.')
+        
+        return result
+    return timeit_wrapper
+
 def read_csv(file_loc):
     with open(file_loc, mode ='r') as file:    
        csv_file = csv.DictReader(file)

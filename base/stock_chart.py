@@ -15,10 +15,6 @@ colors_pastel = qualitative.Pastel
 def get_dates(df):
     get_dt = lambda dd : datetime.fromtimestamp(dd/1000000000)
     return [get_dt(dd) for dd in df.index.values.tolist()]
-    
-def get_simple_chart(df:DataFrame):
-    fig = df.plot(backend='plotly')
-    return fig.to_html(full_html=False)
 
 def get_chart(history_data_df:DataFrame,chart_type:Chart_Type):
     chart=None
@@ -29,6 +25,10 @@ def get_chart(history_data_df:DataFrame,chart_type:Chart_Type):
     elif(chart_type == Chart_Type.VOLUME):
             chart = get_chart_with_volume(history_data_df)
     return chart
+
+def get_simple_chart(df:DataFrame):
+    fig = df.plot(backend='plotly')
+    return fig.to_html(full_html=False)
 
 def get_detailed_chart(df:DataFrame,simple_chart=True,simple_window=100):
     subplot_titles=('OHLC','Volume')

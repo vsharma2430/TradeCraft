@@ -10,15 +10,24 @@ from base.stock_candle_stick_pattern import *
 logger = getLogger('uvicorn.error')
 
 @timeit
-def get_historical_data_1m(STK:str,
+def get_historical_data_interval(STK:str,
                         start_date:dt.date = (dt.datetime.now()-dt.timedelta(days=59)).date(),
                         end_date:dt.date=dt.datetime.now().date(),
                         stock_exchange:Stock_Exchange = Stock_Exchange.NSE,
+                        interval='5m',
+                        days_delta_start = None,
+                        days_delta_end = None,
                         session=None):
+        
+        if(days_delta_start!=None):
+                start_date:dt.date = (dt.datetime.now()-dt.timedelta(days=days_delta_start)).date()
+                
+        if(days_delta_end!=None):
+                end_date:dt.date = (dt.datetime.now()-dt.timedelta(days=days_delta_end)).date()
 
         STK = get_yfin_symbol(stock=STK,stock_exchange=stock_exchange)
         stk_ticker= get_ticker(STK=STK,session=session)
-        stk_historical_df = stk_ticker.history(start=start_date, end=end_date,interval='5m')
+        stk_historical_df = stk_ticker.history(start=start_date, end=end_date,interval=interval)
         
         return {'df' : stk_historical_df}
 
