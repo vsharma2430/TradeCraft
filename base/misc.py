@@ -4,6 +4,8 @@ from functools import wraps
 import time
 from logging import getLogger
 import csv
+from pickle import dump,load
+from os import path
 
 logger = getLogger('uvicorn.error')
 
@@ -133,6 +135,19 @@ def market_open_india():
     return start_now<datetime.datetime.now()<end_now
     
 clean_list = lambda list_obj : [x for x in list_obj if x is not None]
+
+@timeit_concise_print
+def get_cached_fun_data(fun,cache_file):
+    if(path.isfile(cache_file) == True):
+        with open(cache_file, 'rb') as f:
+            loaded_dict = load(f)
+        return loaded_dict
+    else:
+        data = fun()
+        with open(cache_file, 'wb') as f:
+            dump(data, f)
+    return data
+
    
 
 
