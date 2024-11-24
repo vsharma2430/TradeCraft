@@ -18,6 +18,7 @@ logger.debug("Logging started")
 cache_stock_data = r'dump\stock_data.pkl'
 cache_stock_data_date_wise = r'dump\stock_data_date_wise.pkl'
 india_tz=timezone(timedelta(seconds=19800))
+purchase_time = {'hour':15,'minute':25}
 get_ticker_dt = lambda df : [datetime.fromisoformat(dd) for dd in df]
 get_ticker_dates = lambda dts : sorted(list(set([dt.date() for dt in dts])))
 
@@ -31,7 +32,7 @@ def get_close_price(dt_dict,dt):
     return dt_dict[final_dt]['Close']
 
 def get_purchase_price(dt_dict,dt):
-    final_dt = datetime(dt.year,dt.month,dt.day, 15, 25, tzinfo=india_tz)
+    final_dt = datetime(dt.year,dt.month,dt.day, purchase_time['hour'], purchase_time['minute'], tzinfo=india_tz)
     if(final_dt in dt_dict):
         return mean([dt_dict[final_dt]['High'],dt_dict[final_dt]['Close']])
     else:
@@ -96,10 +97,11 @@ def get_buy_trades(date:datetime.date,date_wise_stock_data:dict,portfolio={})->l
     for stockX in today_list:
         if(stockX['stock'] not in portfolio):
             price = stockX['purchase']
-            qty = round(order_price/price)
-            trades.append(Trade(date=date,symbol=stockX['stock'],operation=Stock_Trade.BUY,price=price,quantity=qty))
-            count = count + 1
-            
+            if(price!=0):
+                qty = round(order_price/price)
+                trades.append(Trade(date=date,symbol=stockX['stock'],operation=Stock_Trade.BUY,price=price,quantity=qty))
+                count = count + 1
+                
         if(count == 5):
             break
         
@@ -179,6 +181,7 @@ def perform_simulation():
     logger.info(f'Timeline {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days')
     logger.info(f'Capital : {get_comma_format(capital)}')
     logger.info(f'Sell target : {get_percentage_format(sell_target)}')
+    logger.info(f'Trade time : {purchase_time["hour"]}:{purchase_time["minute"]}')
     logger.info(f'Net P/L : {round(pl)}')
 
 if(__name__ == '__main__'):
