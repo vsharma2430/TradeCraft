@@ -177,7 +177,9 @@ def perform_simulation():
         pl = pl + sum([tradeX.pl for tradeX in date_wise_operations[dateX]['sell']])
 
     logger.info(f'Timeline {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days')
-    logger.info(f'Net P/L : {pl}')
+    logger.info(f'Capital : {get_comma_format(capital)}')
+    logger.info(f'Sell target : {get_percentage_format(sell_target)}')
+    logger.info(f'Net P/L : {round(pl)}')
 
 if(__name__ == '__main__'):
     perform_simulation()

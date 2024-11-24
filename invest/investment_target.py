@@ -8,7 +8,7 @@ order_price = capital / invest_parts
 
 def get_settings():
     return {
-        'capital' : get_format(capital),
+        'capital' : get_comma_format(capital),
         'sell_target' : get_percentage_format(sell_target),
-        'order_price': get_format(order_price)
+        'order_price': get_comma_format(order_price)
     }

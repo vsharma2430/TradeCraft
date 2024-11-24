@@ -54,7 +54,7 @@ def get_round(data):
         return round(data,3)
     return 0
 
-def get_format(data):
+def get_comma_format(data):
     if(data!=None):
         return "{:,}".format(data)
     return 0
