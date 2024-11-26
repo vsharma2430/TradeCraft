@@ -143,6 +143,7 @@ def get_sell_trades(date:datetime.date,stock_wise_stock_data:dict,portfolio:dict
         pl = get_change(trade_obj.price,current_price)
         if(pl>sell_target or on_target):
             trade_sell_obj = copy.deepcopy(trade_obj)
+            trade_sell_obj.date = date
             trade_sell_obj.price = current_price
             trade_sell_obj.operation = Stock_Trade.SELL
             trade_sell_obj.pl = (current_price-trade_obj.price)*trade_obj.quantity
@@ -200,7 +201,7 @@ def perform_simulation(cache:bool = False):
     last_date = trade_dates[-1]
     final_sell_trades = get_sell_trades(date=last_date,stock_wise_stock_data=stock_wise_stock_data,portfolio=portfolio_dict,on_target=True)
     update_portfolio(portfolio=portfolio_dict,trades=final_sell_trades)
-    date_wise_operations[last_date]['sell'].append(final_sell_trades)
+    date_wise_operations[last_date]['sell'].extend(final_sell_trades)
     
     logger.info(f'Final sell on {last_date}')
     for sellX in final_sell_trades:
@@ -209,19 +210,23 @@ def perform_simulation(cache:bool = False):
     logger.info(f'Final portfolio : {portfolio_dict}')
 
     pl = {}
-    for dateX in list(date_wise_operations.keys()):
+    for dateX in date_wise_operations:
         pl_marker = f'{dateX.month}-{dateX.year}'
-        if(dateX.month not in pl):
+        if(pl_marker not in pl):
             pl[pl_marker] = 0
 
         for tradeX in date_wise_operations[dateX]['sell']:
             if hasattr(tradeX, 'pl'):
                 pl[pl_marker] = pl[pl_marker] + tradeX.pl
             else:
-                print(tradeX)
+                print(dateX,tradeX)
 
     logger.info(f'Timeline {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days')
     logger.info(f'Capital : {get_comma_format(capital)}')
     logger.info(f'Sell target : {get_percentage_format(sell_target)}')
     logger.info(f'Trade time : {purchase_time["hour"]}:{purchase_time["minute"]}')
-    logger.info(f'Net P/L : {pl}')
+    logger.info(f'Net P/L : {sum([pl[dtX] for dtX in pl])}')
+    logger.info(f'Month-wise P/L : ')
+    for dtX in pl:
+        logger.info(f'{dtX} -> {pl[dtX]}')
+
