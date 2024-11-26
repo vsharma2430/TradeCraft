@@ -221,12 +221,13 @@ def perform_simulation(cache:bool = False):
             else:
                 print(dateX,tradeX)
 
-    logger.info(f'Timeline {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days')
+    logger.info(f'Timeline {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days or  ({ round((trade_dates[-1]-trade_dates[1]).days/30,1)}) months')
     logger.info(f'Capital : {get_comma_format(capital)}')
     logger.info(f'Sell target : {get_percentage_format(sell_target)}')
     logger.info(f'Trade time : {purchase_time["hour"]}:{purchase_time["minute"]}')
-    logger.info(f'Net P/L : {sum([pl[dtX] for dtX in pl])}')
+    logger.info(f'Returns : {get_percentage_format(round(sum([pl[dtX] for dtX in pl]))/capital)}')
+    logger.info(f'Net P/L : {round(sum([pl[dtX] for dtX in pl]))}')
     logger.info(f'Month-wise P/L : ')
     for dtX in pl:
-        logger.info(f'{dtX} -> {pl[dtX]}')
+        logger.info(f'{dtX} -> {round(pl[dtX])}')
 
