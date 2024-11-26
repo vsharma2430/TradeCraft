@@ -23,17 +23,19 @@ async def root(request: Request):
             }
     )
     
-stock_props = lambda stk_type : {'title':f'{stk_type.upper()}',
-                                 'list':[{ 'caption': 'Lists' , 'href' : f'/{stk_type}/list/'},
-                                         { 'caption': 'All Listed (NSE)' , 'href' : f'/{stk_type}/history/'},
-                                         { 'caption': 'Portfolio' , 'href' : f'/{stk_type}/portfolio/'}],}
+stock_props = lambda stk : {'title':f'{stk.upper()}',
+                                 'list':[{ 'caption': 'Lists' , 'href' : f'/{stk}/list/'},
+                                         { 'caption': 'All Listed (NSE)' , 'href' : f'/{stk}/history/'},
+                                         { 'caption': 'Portfolio' , 'href' : f'/{stk}/portfolio/'},
+                                         { 'caption': 'Backtest' , 'href' : f'/{stk}/backtest/'} if stk == 'etf' else None,
+                                         ],}
 
 @app.get('/etf/',response_class=HTMLResponse)
 async def root_etf(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context= stock_props(stk_type='etf')
+        context= stock_props(stk='etf')
     )
 
 @app.get('/stock/')
@@ -41,7 +43,7 @@ async def root_stock(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context=stock_props(stk_type='stock')
+        context=stock_props(stk='stock')
     )
     
 
