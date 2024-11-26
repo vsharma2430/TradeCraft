@@ -3,4 +3,4 @@ WORKDIR /code
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY ./app /code/app
-CMD ["fastapi", "run", "app/client.py", "--port", "8006", "--workers", "17"]
+CMD ["fastapi", "run", "pyetf/client.py", "--port", "8006", "--workers", "17"]
