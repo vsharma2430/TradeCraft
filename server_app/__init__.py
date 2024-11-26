@@ -18,6 +18,7 @@ template_stock_list = 'stock_list.html'
 template_stock_list_stocks = 'stock_list_stocks.html'
 template_stock_data = 'stock_data.html'
 template_portfolio = 'portfolio_edit_table.html'
+template_backtest = 'back_test.html'
 
 class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
     pass

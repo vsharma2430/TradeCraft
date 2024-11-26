@@ -8,8 +8,8 @@ from base.misc import *
 from invest.trade import *
 from invest.investment_target import *
 
-
-logging.basicConfig(filename=r'dump\std.log', 
+log_file = r'dump\std.log'
+logging.basicConfig(filename=log_file, 
 					format='%(asctime)s %(message)s', 
 					filemode='w') 
 logger=logging.getLogger() 
@@ -18,7 +18,7 @@ logger.debug("Logging started")
 
 cache_stock_data_stock_wise = r'dump\stock_data_stock_wise.pkl'
 cache_stock_data_date_wise = r'dump\stock_data_date_wise.pkl'
-list_name = 'FIRE1YR'
+
 india_tz=timezone(timedelta(seconds=19800))
 purchase_time = {'hour':15,'minute':25}
 get_ticker_dt = lambda df : [datetime.fromisoformat(dd) for dd in df]
@@ -32,12 +32,10 @@ def get_close_price(dt_dict:dict,dt:datetime):
         return None
     
 def get_close_price_previous_day(dt_dict:dict,dt:datetime): 
-    final_dt:datetime
     for delta in range(1,7):
         try_dt = datetime(dt.year,dt.month,dt.day,tzinfo=india_tz)-timedelta(days=delta)
         if(try_dt in dt_dict):
             return dt_dict[try_dt]['Close']
-            break
     return None
 
 
@@ -86,7 +84,7 @@ def get_decision_data_1d_stock(plain_stk:str):
     
     return data
 
-def get_stock_wise_stock_data(func):
+def get_stock_wise_stock_data(func,list_name:str=''):
     fire_list =[get_plain_stock(x) for x in get_file_stocks_object(folder_location=etf_csv_folder)[list_name]]
     data = {}
     for stk in fire_list:
@@ -160,16 +158,16 @@ def update_portfolio(portfolio:dict={},trades=[]):
             portfolio[tradeX.symbol] = tradeX
     
 @timeit_concise_print
-def perform_simulation(cache:bool = False):
+def perform_simulation(list_name:str='FIRE',cache:bool = False) -> list:
 
     stock_wise_stock_data = None
     date_wise_stock_data = None 
 
     if(cache):
-        stock_wise_stock_data = get_cached_fun_data(func=get_stock_wise_stock_data,args=[get_decision_data_1d_stock],cache_file=cache_stock_data_stock_wise)
+        stock_wise_stock_data = get_cached_fun_data(func=get_stock_wise_stock_data,args=[get_decision_data_1d_stock,list_name],cache_file=cache_stock_data_stock_wise)
         date_wise_stock_data = get_cached_fun_data(func=get_date_wise_stock_data,args=[stock_wise_stock_data],cache_file=cache_stock_data_date_wise)
     else:
-        stock_wise_stock_data = get_stock_wise_stock_data(get_decision_data_1d_stock)
+        stock_wise_stock_data = get_stock_wise_stock_data(get_decision_data_1d_stock,list_name)
         date_wise_stock_data = get_date_wise_stock_data(stock_wise_stock_data)
     
     portfolio_dict = {}
@@ -220,8 +218,20 @@ def perform_simulation(cache:bool = False):
                 pl[pl_marker] = pl[pl_marker] + tradeX.pl
             else:
                 print(dateX,tradeX)
+                
+    result = {
+        'Stock List' : f'{list_name}',
+        'Timeline' : f'{trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days or  ({ round((trade_dates[-1]-trade_dates[1]).days/30,1)}) months',
+        'Capital' : f'{get_comma_format(capital)}',
+        'Sell target' : f'{get_percentage_format(sell_target)}',
+        'Trade time' : f'{purchase_time["hour"]}:{purchase_time["minute"]}',
+        'Returns' : f'{get_percentage_format(round(sum([pl[dtX] for dtX in pl]))/capital)}',
+        'Net P/L' : f'{round(sum([pl[dtX] for dtX in pl]))}',
+        'Month-wise P/L' : f'{pl}'
+        }
 
-    logger.info(f'Timeline {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days or  ({ round((trade_dates[-1]-trade_dates[1]).days/30,1)}) months')
+    logger.info(f'Stock List : {list_name}')
+    logger.info(f'Timeline : {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days or  ({ round((trade_dates[-1]-trade_dates[1]).days/30,1)}) months')
     logger.info(f'Capital : {get_comma_format(capital)}')
     logger.info(f'Sell target : {get_percentage_format(sell_target)}')
     logger.info(f'Trade time : {purchase_time["hour"]}:{purchase_time["minute"]}')
@@ -230,4 +240,6 @@ def perform_simulation(cache:bool = False):
     logger.info(f'Month-wise P/L : ')
     for dtX in pl:
         logger.info(f'{dtX} -> {round(pl[dtX])}')
+        
+    return result
 
