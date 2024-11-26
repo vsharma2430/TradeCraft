@@ -16,7 +16,7 @@ def download_csv_interday(folder_location=etf_csv_folder,stock_list_id = 'FIRE')
     
     for stock in stock_download_list:
         plain_stk = get_plain_stock(stock=stock)
-        df:DataFrame = get_historical_data(STK=stock)['df']
+        df:DataFrame = get_historical_data(start_date= (dt.datetime.now()-dt.timedelta(days=365*10)).date(),STK=stock)['df']
         location = join(csv_save_location,f'{plain_stk}.csv')
         df.to_csv(path_or_buf=location, encoding='utf-8')
             

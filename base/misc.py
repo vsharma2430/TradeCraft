@@ -137,13 +137,16 @@ def market_open_india():
 clean_list = lambda list_obj : [x for x in list_obj if x is not None]
 
 @timeit_concise_print
-def get_cached_fun_data(fun,cache_file):
+def get_cached_fun_data(func,args=[],kwargs={},cache_file=None):
+    if(cache_file == None):
+        cache_file = f'./dump/{func.__name__}.pkl'
+
     if(path.isfile(cache_file) == True):
         with open(cache_file, 'rb') as f:
             loaded_dict = load(f)
         return loaded_dict
     else:
-        data = fun()
+        data = func(*args,**kwargs)
         with open(cache_file, 'wb') as f:
             dump(data, f)
     return data

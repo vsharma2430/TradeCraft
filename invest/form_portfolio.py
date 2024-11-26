@@ -8,6 +8,7 @@ from base.misc import *
 from invest.trade import *
 from invest.investment_target import *
 
+
 logging.basicConfig(filename=r'dump\std.log', 
 					format='%(asctime)s %(message)s', 
 					filemode='w') 
@@ -15,23 +16,32 @@ logger=logging.getLogger()
 logger.setLevel(logging.DEBUG) 
 logger.debug("Logging started") 
 
-cache_stock_data = r'dump\stock_data.pkl'
+cache_stock_data_stock_wise = r'dump\stock_data_stock_wise.pkl'
 cache_stock_data_date_wise = r'dump\stock_data_date_wise.pkl'
+list_name = 'FIRE1YR'
 india_tz=timezone(timedelta(seconds=19800))
 purchase_time = {'hour':15,'minute':25}
 get_ticker_dt = lambda df : [datetime.fromisoformat(dd) for dd in df]
 get_ticker_dates = lambda dts : sorted(list(set([dt.date() for dt in dts])))
 
-def get_close_price(dt_dict,dt): 
+def get_close_price(dt_dict:dict,dt:datetime): 
+    try_dt = datetime(dt.year,dt.month,dt.day,tzinfo=india_tz)
+    if(try_dt in dt_dict):
+        return dt_dict[try_dt]['Close']
+    else:
+        return None
+    
+def get_close_price_previous_day(dt_dict:dict,dt:datetime): 
     final_dt:datetime
     for delta in range(1,7):
         try_dt = datetime(dt.year,dt.month,dt.day,tzinfo=india_tz)-timedelta(days=delta)
         if(try_dt in dt_dict):
-            final_dt = try_dt
+            return dt_dict[try_dt]['Close']
             break
-    return dt_dict[final_dt]['Close']
+    return None
 
-def get_purchase_price(dt_dict,dt):
+
+def get_purchase_price_at_time(dt_dict,dt):
     final_dt = datetime(dt.year,dt.month,dt.day, purchase_time['hour'], purchase_time['minute'], tzinfo=india_tz)
     if(final_dt in dt_dict):
         return mean([dt_dict[final_dt]['High'],dt_dict[final_dt]['Close']])
@@ -39,7 +49,7 @@ def get_purchase_price(dt_dict,dt):
         print(f'Data missing for {final_dt}')
         return 0
 
-def get_decision_data_stock(plain_stk:str):
+def get_decision_data_5m_stock(plain_stk:str):
     csv_file_1d = rf'invest\back_test\2024\1d\{plain_stk}.csv'
     csv_file_5m = rf'invest\back_test\2024\5m\{plain_stk}.csv'
 
@@ -55,16 +65,33 @@ def get_decision_data_stock(plain_stk:str):
     data = {}
     form_data = lambda dtX,purchase=0,close=0 : {'dt':dtX,'purchase':purchase,'previous_close':close,'change':get_change(close,purchase)} 
     for dtX in index_ticker_dates:
-        if(get_purchase_price(dt_dict_5m,dtX)==0):
+        if(get_purchase_price_at_time(dt_dict_5m,dtX)==0):
             print(f'data missing for {plain_stk}')
-        data[dtX] = form_data(dtX,purchase=get_purchase_price(dt_dict_5m,dtX),close=get_close_price(dt_dict_1d,dtX))
+        data[dtX] = form_data(dtX,purchase=get_purchase_price_at_time(dt_dict_5m,dtX),close=get_close_price_previous_day(dt_dict_1d,dtX))
     return data
 
-def get_stock_data():
-    fire_list =[get_plain_stock(x) for x in get_file_stocks_object(folder_location=etf_csv_folder)['FIRE']]
+def get_decision_data_1d_stock(plain_stk:str):
+    csv_file_1d = rf'invest\back_test\2024\1d\{plain_stk}.csv'
+
+    df_1d = pd.read_csv(csv_file_1d,index_col=0)
+    raw_dict_1d = df_1d.to_dict(orient='index')
+    dt_dict_1d = { datetime.fromisoformat(dd) : raw_dict_1d[dd] for dd in raw_dict_1d }
+    index_ticker_dates = get_ticker_dates(dt_dict_1d)
+
+    data = {}
+    form_data = lambda dtX,purchase=0,close=0 : {'dt':dtX,'purchase':purchase,'previous_close':close,'change':get_change(close,purchase)} 
+    
+    for dtX in index_ticker_dates:
+        data[dtX] = form_data(dtX,purchase=get_close_price(dt_dict_1d,dtX),close=get_close_price_previous_day(dt_dict_1d,dtX))
+    
+    return data
+
+def get_stock_wise_stock_data(func):
+    fire_list =[get_plain_stock(x) for x in get_file_stocks_object(folder_location=etf_csv_folder)[list_name]]
     data = {}
     for stk in fire_list:
-        data[stk] = get_decision_data_stock(plain_stk=stk)
+        #func -> get_decision_data_1d_stock or get_decision_data_5m_stock
+        data[stk] = func(plain_stk=stk)
     return data
 
 def get_intersection_dates(data:dict):
@@ -74,16 +101,15 @@ def get_intersection_dates(data:dict):
     return sorted(list(set.intersection(*sets)))
 
 @timeit_concise_print
-def get_date_wise_stock_data():
-    stock_data = get_cached_fun_data(get_stock_data,cache_file=cache_stock_data)
-    trade_dates = get_intersection_dates(stock_data)
-    trade_stocks = stock_data.keys()
+def get_date_wise_stock_data(stock_wise_stock_data):
+    trade_dates = get_intersection_dates(stock_wise_stock_data)
+    trade_stocks = stock_wise_stock_data.keys()
     
     date_wise_stock_dict = {}
     for dateX in trade_dates:
         date_wise_stock_dict[dateX] = []
         for stockX in trade_stocks:
-            date_wise_stock_dict[dateX].append({'stock':stockX,'purchase':stock_data[stockX][dateX]['purchase'],'change':stock_data[stockX][dateX]['change']})
+            date_wise_stock_dict[dateX].append({'stock':stockX,'purchase':stock_wise_stock_data[stockX][dateX]['purchase'],'change':stock_wise_stock_data[stockX][dateX]['change']})
         date_wise_stock_dict[dateX].sort(key=lambda x:x['change'])      
     
     return date_wise_stock_dict
@@ -133,9 +159,17 @@ def update_portfolio(portfolio:dict={},trades=[]):
             portfolio[tradeX.symbol] = tradeX
     
 @timeit_concise_print
-def perform_simulation():
-    stock_wise_stock_data = get_cached_fun_data(get_stock_data,cache_file=cache_stock_data)
-    date_wise_stock_data = get_cached_fun_data(get_date_wise_stock_data,cache_file=cache_stock_data_date_wise)
+def perform_simulation(cache:bool = False):
+
+    stock_wise_stock_data = None
+    date_wise_stock_data = None 
+
+    if(cache):
+        stock_wise_stock_data = get_cached_fun_data(func=get_stock_wise_stock_data,args=[get_decision_data_1d_stock],cache_file=cache_stock_data_stock_wise)
+        date_wise_stock_data = get_cached_fun_data(func=get_date_wise_stock_data,args=[stock_wise_stock_data],cache_file=cache_stock_data_date_wise)
+    else:
+        stock_wise_stock_data = get_stock_wise_stock_data(get_decision_data_1d_stock)
+        date_wise_stock_data = get_date_wise_stock_data(stock_wise_stock_data)
     
     portfolio_dict = {}
     trade_dates = list(date_wise_stock_data.keys())
@@ -170,19 +204,24 @@ def perform_simulation():
     
     logger.info(f'Final sell on {last_date}')
     for sellX in final_sell_trades:
-            logger.info(sellX)
+        logger.info(sellX)
 
     logger.info(f'Final portfolio : {portfolio_dict}')
-    
-    pl = 0
-    for dateX in list(date_wise_operations.keys())[:30]:
-        pl = pl + sum([tradeX.pl for tradeX in date_wise_operations[dateX]['sell']])
+
+    pl = {}
+    for dateX in list(date_wise_operations.keys()):
+        pl_marker = f'{dateX.month}-{dateX.year}'
+        if(dateX.month not in pl):
+            pl[pl_marker] = 0
+
+        for tradeX in date_wise_operations[dateX]['sell']:
+            if hasattr(tradeX, 'pl'):
+                pl[pl_marker] = pl[pl_marker] + tradeX.pl
+            else:
+                print(tradeX)
 
     logger.info(f'Timeline {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days')
     logger.info(f'Capital : {get_comma_format(capital)}')
     logger.info(f'Sell target : {get_percentage_format(sell_target)}')
     logger.info(f'Trade time : {purchase_time["hour"]}:{purchase_time["minute"]}')
-    logger.info(f'Net P/L : {round(pl)}')
-
-if(__name__ == '__main__'):
-    perform_simulation()
+    logger.info(f'Net P/L : {pl}')
