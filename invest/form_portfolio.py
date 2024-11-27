@@ -38,7 +38,6 @@ def get_close_price_previous_day(dt_dict:dict,dt:datetime):
             return dt_dict[try_dt]['Close']
     return None
 
-
 def get_purchase_price_at_time(dt_dict,dt):
     final_dt = datetime(dt.year,dt.month,dt.day, purchase_time['hour'], purchase_time['minute'], tzinfo=india_tz)
     if(final_dt in dt_dict):
@@ -218,28 +217,25 @@ def perform_simulation(list_name:str='FIRE',cache:bool = False) -> list:
                 pl[pl_marker] = pl[pl_marker] + tradeX.pl
             else:
                 print(dateX,tradeX)
-                
+    
+    for dtX in pl:
+        pl[dtX] = round(pl[dtX],1)
+
     result = {
         'Stock List' : f'{list_name}',
         'Timeline' : f'{trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days or  ({ round((trade_dates[-1]-trade_dates[1]).days/30,1)}) months',
-        'Capital' : f'{get_comma_format(capital)}',
+        'Capital' : f'₹ {get_comma_format(capital)}',
         'Sell target' : f'{get_percentage_format(sell_target)}',
         'Trade time' : f'{purchase_time["hour"]}:{purchase_time["minute"]}',
-        'Returns' : f'{get_percentage_format(round(sum([pl[dtX] for dtX in pl]))/capital)}',
-        'Net P/L' : f'{round(sum([pl[dtX] for dtX in pl]))}',
-        'Month-wise P/L' : f'{pl}'
+        'P/L and Returns' :{'Net P/L (Excluding this month)' : f'₹ {get_comma_format(round(sum([pl[dtX] for dtX in list(pl.keys())[:-1]])))}',
+                            'Returns (Excluding this month)' : f'{get_percentage_format(round(sum([pl[dtX] for dtX in list(pl.keys())[:-1]]))/capital)}',
+                            'Net P/L (Including this month)' : f'₹ {get_comma_format(round(sum([pl[dtX] for dtX in pl])))}',
+                            'Returns (Including this month)' : f'{get_percentage_format(round(sum([pl[dtX] for dtX in pl]))/capital)}',},
+        'Month-wise P/L' : pl
         }
 
-    logger.info(f'Stock List : {list_name}')
-    logger.info(f'Timeline : {trade_dates[1]} to {trade_dates[-1]} -> ({(trade_dates[-1]-trade_dates[1]).days}) days or  ({ round((trade_dates[-1]-trade_dates[1]).days/30,1)}) months')
-    logger.info(f'Capital : {get_comma_format(capital)}')
-    logger.info(f'Sell target : {get_percentage_format(sell_target)}')
-    logger.info(f'Trade time : {purchase_time["hour"]}:{purchase_time["minute"]}')
-    logger.info(f'Returns : {get_percentage_format(round(sum([pl[dtX] for dtX in pl]))/capital)}')
-    logger.info(f'Net P/L : {round(sum([pl[dtX] for dtX in pl]))}')
-    logger.info(f'Month-wise P/L : ')
-    for dtX in pl:
-        logger.info(f'{dtX} -> {round(pl[dtX])}')
+    for key in result:
+        logger.info(f'{key} : {result[key]}')
         
     return result
 
