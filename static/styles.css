@@ -1,11 +1,11 @@
 .table-fixed {
-    table-layout: fixed;
- }
+  table-layout: fixed;
+}
 
 .word-wrap-normal {  
-    word-wrap: normal;  
-  }  
+  word-wrap: normal;  
+}  
 
 .word-wrap-break {  
-    word-wrap: break-word;  
-  }  
+  word-wrap: break-word;  
+}  

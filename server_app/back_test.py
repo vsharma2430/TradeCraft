@@ -20,10 +20,11 @@ get_backtest_context = lambda stk_type,files_object:{
 @app.get('/etf/backtest/',response_class=HTMLResponse)
 async def root_etf_list(request: Request):
     files_object = get_file_stocks_object(folder_location=etf_csv_folder,exclude_all=True)
+    context=get_backtest_context(stk_type='etf',files_object=files_object)
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context=get_backtest_context(stk_type='etf',files_object=files_object)
+        context=context
     )
 
 @app.get('/etf/backtest/{list_id}',response_class=HTMLResponse)
@@ -36,5 +37,6 @@ async def root_etf_history(request: Request,list_id:str):
         context={
             'title':f'BACKTEST FOR {list_id}',
             'result': result,
+            **nav_context
             }
     )
