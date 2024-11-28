@@ -8,19 +8,26 @@ from base.stock_price import *
 from base.misc import *
 from invest.base import *
 from invest.portfolio import *
+from server_app.nav_bar import nav_context
 
 # lists etf
+
+get_list_context = lambda files_object,stk_type : {
+            'title':f'{stk_type.upper()} LISTS',
+            'list':[{ 'caption':str(key) , 'href' : f'/{stk_type}/list/{key}'} for key in files_object],
+            **nav_context
+            }
 
 @app.get('/etf/list/',response_class=HTMLResponse)
 async def root_etf_list(request: Request):
     files_object = get_file_stocks_object(folder_location=etf_csv_folder,exclude_all=True)
+    
+    print()
+
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context={
-            'title':'ETF LISTS',
-            'list':[{ 'caption':str(key) , 'href' : f'/etf/list/{key}'} for key in files_object],
-            }
+        context=get_list_context(files_object=files_object,stk_type='etf')
     )
 
 @app.get('/etf/list/{list_id}',response_class=HTMLResponse)
@@ -53,10 +60,7 @@ async def root_stock_list(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context={
-            'title':'STOCK LISTS',
-            'list':[{ 'caption':str(key) , 'href' : f'/stock/list/{key}'} for key in files_object],
-            }
+        context=get_list_context(files_object=files_object,stk_type='stock')
     )
 
 @app.get('/stock/list/{list_id}',response_class=HTMLResponse)

@@ -6,6 +6,7 @@ from logging import getLogger
 from pandas import DataFrame
 from base.stock_chart import *
 from base.stock_candle_stick_pattern import *
+from server_app.nav_bar import nav_context
 
 logger = getLogger('uvicorn.error')
 
@@ -130,5 +131,6 @@ def get_history_context(STK:str,
                 'volume_365':get_comma_format(get_round(get_data_from_dict(history_data,'volume_365'))),
                 'history': history_data_html,
                 'chart': get_chart(history_data_df=history_data_df,chart_type=chart_type) ,
-                'current_data':current_data['ticker']
+                'current_data':current_data['ticker'],
+                **nav_context
                 }

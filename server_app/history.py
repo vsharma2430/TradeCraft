@@ -8,7 +8,13 @@ from base.stock_price import *
 from base.misc import *
 from invest.base import *
 from invest.portfolio import *
+from server_app.nav_bar import nav_context
 
+get_history_list_context = lambda stk_type,stocks:{
+            'title':f'{stk_type.upper()}s',
+            'list':[{ 'caption': get_plain_stock(str(key)) , 'href' : f'/{stk_type}/history/{key}'} for key in stocks],
+            **nav_context
+            }
 
 # history etf
 
@@ -24,10 +30,7 @@ async def root_etf_history(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context={
-            'title':'ETFs',
-            'list':[{ 'caption': get_plain_stock(str(key)) , 'href' : f'/etf/history/{key}'} for key in stocks],
-            }
+        context=get_history_list_context(stk_type='etf',stocks=stocks)
     )
 
 @app.get('/etf/history/{stk_id}/',response_class=HTMLResponse)
@@ -55,10 +58,7 @@ async def root_stock_history(request: Request):
     return templates.TemplateResponse(
         request=request, 
         name=template_stock_list, 
-        context={
-            'title':'Stocks',
-            'list':[{ 'caption': get_plain_stock(str(key)) , 'href' : f'/stock/history/{key}'} for key in stocks],
-            }
+        context=get_history_list_context(stk_type='stock',stocks=stocks)
     )
 
 @app.get('/stock/history/{stk_id}/',response_class=HTMLResponse)

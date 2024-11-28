@@ -1,6 +1,7 @@
 <html>
     <head>
-        <title>{{title}}</title>
+        {% include 'title.html' %}
+
         {% include 'cdn_static.html' %}
 
         <script>
@@ -19,9 +20,9 @@
     <body>
         {% include 'top_navbar.html' %}
 
-        <input id="myInput" type="text" placeholder="Search Item" style="margin-left: 2%;">
+        <input id="myInput" type="text" placeholder="Search Item" style="margin-left: 1%;margin-top: 4%;">
 
-        <ul id="myList" class="list-group" id="navigation" style="margin: 2%;">
+        <ul id="myList" class="list-group" id="navigation" style="margin: 1%;">
             {% for item in list %}
                 <li class="list-group-item display-6">
                     <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="{{ item.href }}">

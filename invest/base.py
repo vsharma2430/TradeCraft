@@ -6,6 +6,7 @@ from base.stock_history import *
 from base.misc import *
 from invest.investment_target import *
 from invest.trade import *
+from server_app.nav_bar import nav_context
 
 etf_csv_folder = r'invest\stock_list\ETF'
 stock_csv_folder = r'invest\stock_list\stock'
@@ -176,6 +177,7 @@ def get_stock_list_context(list_id:str,stock_list_object:dict,portfolio_object:d
             {
                 'table_head':'PORTFOLIO',
                 'table' : clean_list(get_portfolio(portfolio_object)),    
-            }
+            },
+            **nav_context
         }
     

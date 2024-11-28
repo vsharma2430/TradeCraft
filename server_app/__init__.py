@@ -14,6 +14,7 @@ app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 templates = Jinja2Templates(directory='templates')
 
+template_home = 'home.html'
 template_stock_list = 'stock_list.html'
 template_stock_list_stocks = 'stock_list_stocks.html'
 template_stock_data = 'stock_data.html'

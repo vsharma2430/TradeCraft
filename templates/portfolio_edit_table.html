@@ -8,14 +8,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     {% include 'cdn_static.html' %}
 
-    <title>{{title}}</title>
+    {% include 'title.html' %}
+
     </head>
   <body>
 
     <div>
         {% include 'top_navbar.html' %}
 
-        <div>
+        <div style="margin-top: 4%;">
             <div class="table-responsive col-md-10">
                 <table class="table table-bordered table-striped table-hover table-condensed text-center table-fixed" id="DyanmicTable">
                     <thead>

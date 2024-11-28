@@ -8,42 +8,16 @@ from base.stock_price import *
 from base.misc import *
 from invest.base import *
 from invest.portfolio import *
+from server_app.nav_bar import nav_context
 
 # root
 
 @app.get('/',response_class=HTMLResponse)
+@app.get('/etf/',response_class=HTMLResponse)
+@app.get('/stock/',response_class=HTMLResponse)
 async def root(request: Request):
     return templates.TemplateResponse(
         request=request, 
-        name=template_stock_list, 
-        context={
-            'title':'TRADE CRAFT - Home',
-            'list':[{ 'caption': 'ETF' , 'href' : f'/etf/'},
-                    { 'caption': 'Stock' , 'href' : f'/stock/'}],
-            }
+        name=template_home, 
+        context=nav_context,
     )
-    
-stock_props = lambda stk : {'title':f'{stk.upper()}',
-                                 'list':[{ 'caption': 'Lists' , 'href' : f'/{stk}/list/'},
-                                         { 'caption': 'All Listed (NSE)' , 'href' : f'/{stk}/history/'},
-                                         { 'caption': 'Portfolio' , 'href' : f'/{stk}/portfolio/'},
-                                         { 'caption': 'Backtest' , 'href' : f'/{stk}/backtest/'} if stk == 'etf' else None,
-                                         ],}
-
-@app.get('/etf/',response_class=HTMLResponse)
-async def root_etf(request: Request):
-    return templates.TemplateResponse(
-        request=request, 
-        name=template_stock_list, 
-        context= stock_props(stk='etf')
-    )
-
-@app.get('/stock/')
-async def root_stock(request: Request):
-    return templates.TemplateResponse(
-        request=request, 
-        name=template_stock_list, 
-        context=stock_props(stk='stock')
-    )
-    
-
