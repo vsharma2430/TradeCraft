@@ -18,12 +18,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
-                    </li>
+                    <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li> -->
 
                     {% for menu_item in nav_context.nav_list %}
-                    
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="menu_item.href" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{menu_item.caption}}

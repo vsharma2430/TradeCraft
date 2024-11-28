@@ -29,7 +29,7 @@ session = CachedLimiterSession(
     backend=SQLiteCache(r'cache\yfinance.cache'),
 )
 
-#favicon
+#favicon and images
 favicon_path = f'static/images/favicon.ico'
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
