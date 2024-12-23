@@ -1,2 +1,2 @@
-docker build -t myimage .
-docker run -d --name mycontainer -p 80:80 myimage
+docker build -t fastapi-app .
+docker run -p 8000:8000 fastapi-app

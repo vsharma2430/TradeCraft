@@ -67,7 +67,7 @@ def get_historical_data(STK:str,
 
 def get_current_data(STK:str,stock_type:Stock_Type):
         ticker = get_ticker_price_server(STK=STK)
-        price,open = get_price_server_stock_current_price(stock_ticker=ticker,stock_type=stock_type)
+        price,open = get_price_server_stock_current_price(stock_ticker=ticker,stock_type=stock_type) 
         return  {
                 'current_stock_price' : get_round(price),
                 'previous_close' : get_round(get_price_server_stock_previous_close(ticker)),

@@ -1,5 +1,4 @@
 appdirs==1.4.4
-beautifulsoup4==4.9.3
 certifi==2024.8.30
 charset-normalizer==3.4.0
 click==7.1.2
@@ -10,7 +9,6 @@ frozendict==2.4.6
 html5lib==1.1
 idna==3.10
 joblib==1.4.2
-jugaad-data==0.26
 kiwisolver==1.4.7
 lxml==5.3.0
 matplotlib==3.9.2
